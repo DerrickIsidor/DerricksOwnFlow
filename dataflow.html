@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DataFlow — Derrick</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,500;0,700;1,300;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#FAFAF8;
+  --off:#F0EFEB;
+  --stone:#E2E0DA;
+  --mid:#9B9890;
+  --dark:#2C2B27;
+  --black:#181714;
+  --ink:#0D0D0B;
+  --accent:#1A6BFF;
+  --accent2:#FF6B35;
+  --green:#00C48C;
+  --purple:#8B5CF6;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--white);color:var(--ink);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,250,248,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--stone);display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:60px;}
+.nav-logo{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:6px;}
+.nav-logo .dot{width:8px;height:8px;background:var(--accent);border-radius:50%;}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{font-size:13px;font-weight:400;color:var(--mid);text-decoration:none;transition:color 0.2s;letter-spacing:0.01em;}
+.nav-links a:hover{color:var(--ink);}
+.nav-status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mid);}
+.status-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding:0;padding-top:60px;overflow:hidden;}
+.hero-left{display:flex;flex-direction:column;justify-content:center;padding:80px 48px 80px 48px;border-right:1px solid var(--stone);}
+.hero-right{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:80px 48px;background:var(--off);position:relative;overflow:hidden;}
+
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.08em;margin-bottom:24px;display:flex;align-items:center;gap:8px;}
+.hero-eyebrow::before{content:'//';opacity:0.5;}
+.hero-name{font-family:'Fraunces',serif;font-size:clamp(52px,6vw,88px);font-weight:700;line-height:1;color:var(--ink);margin-bottom:8px;}
+.hero-name em{font-style:italic;color:var(--accent);}
+.hero-role{font-family:'Fraunces',serif;font-size:clamp(20px,2.5vw,32px);font-weight:300;font-style:italic;color:var(--mid);margin-bottom:32px;}
+.hero-bio{font-size:15px;font-weight:300;color:var(--dark);line-height:1.8;max-width:420px;margin-bottom:40px;}
+.hero-bio strong{color:var(--ink);font-weight:500;}
+.hero-btns{display:flex;gap:12px;}
+.btn-solid{font-size:13px;font-weight:500;letter-spacing:0.03em;color:var(--white);background:var(--ink);padding:12px 24px;text-decoration:none;border-radius:3px;transition:background 0.2s;}
+.btn-solid:hover{background:var(--accent);}
+.btn-outline{font-size:13px;font-weight:500;letter-spacing:0.03em;color:var(--ink);background:transparent;border:1px solid var(--stone);padding:12px 24px;text-decoration:none;border-radius:3px;transition:all 0.2s;}
+.btn-outline:hover{border-color:var(--ink);}
+
+/* data viz art piece */
+.art-wrap{position:relative;width:100%;max-width:420px;}
+.art-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--mid);letter-spacing:0.08em;margin-bottom:16px;text-align:center;}
+.art-canvas{width:100%;aspect-ratio:1;position:relative;}
+#heroCanvas{width:100%;height:100%;border-radius:4px;}
+.art-caption{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--mid);letter-spacing:0.06em;text-align:center;margin-top:12px;}
+
+/* SKILLS BAR */
+.skills-bar{background:var(--ink);padding:18px 48px;display:flex;align-items:center;gap:48px;overflow-x:auto;}
+.skill-item{display:flex;align-items:center;gap:8px;white-space:nowrap;flex-shrink:0;}
+.skill-dot{width:5px;height:5px;border-radius:50%;}
+.skill-name{font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(250,250,248,0.5);letter-spacing:0.06em;}
+
+/* WORK */
+#work{padding:100px 48px;background:var(--white);}
+.work-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:64px;}
+.section-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.08em;margin-bottom:12px;}
+.section-eyebrow::before{content:'// ';}
+.section-title{font-family:'Fraunces',serif;font-size:clamp(36px,5vw,60px);font-weight:700;color:var(--ink);line-height:1.05;}
+.section-title em{font-style:italic;font-weight:300;}
+.projects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--stone);}
+.project-card{background:var(--white);padding:40px;transition:background 0.2s;cursor:default;}
+.project-card:hover{background:var(--off);}
+.project-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;}
+.project-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mid);}
+.project-tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+.project-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 8px;border-radius:2px;letter-spacing:0.05em;}
+.tag-eng{background:rgba(26,107,255,0.08);color:var(--accent);}
+.tag-sci{background:rgba(139,92,246,0.08);color:var(--purple);}
+.tag-viz{background:rgba(255,107,53,0.08);color:var(--accent2);}
+.tag-ml{background:rgba(0,196,140,0.08);color:var(--green);}
+.project-title{font-family:'Fraunces',serif;font-size:26px;font-weight:500;color:var(--ink);margin-bottom:12px;line-height:1.2;}
+.project-desc{font-size:13px;color:var(--mid);line-height:1.8;margin-bottom:24px;font-weight:300;}
+.project-stack{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.stack-pill{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dark);background:var(--stone);padding:4px 10px;border-radius:2px;}
+.project-link{font-size:12px;font-weight:500;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:6px;transition:gap 0.2s,color 0.2s;}
+.project-link:hover{color:var(--accent);gap:10px;}
+.project-link::after{content:'→';}
+
+/* DATA VIZ SECTION */
+#dataviz{padding:100px 48px;background:var(--off);border-top:1px solid var(--stone);}
+.viz-inner{max-width:1100px;margin:0 auto;}
+.viz-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px;}
+.viz-card{background:var(--white);border:1px solid var(--stone);border-radius:4px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;}
+.viz-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.08);}
+.viz-art{height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.viz-body{padding:20px;}
+.viz-title{font-family:'Fraunces',serif;font-size:18px;font-weight:500;color:var(--ink);margin-bottom:6px;}
+.viz-sub{font-size:12px;color:var(--mid);font-weight:300;line-height:1.6;}
+.viz-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);margin-top:10px;}
+
+/* ABOUT / PHILOSOPHY */
+#about{padding:100px 48px;background:var(--ink);color:var(--white);}
+.about-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.about-quote{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,48px);font-weight:300;font-style:italic;color:var(--white);line-height:1.3;border-left:3px solid var(--accent);padding-left:32px;}
+.about-quote strong{font-style:normal;font-weight:700;}
+.about-text p{font-size:14px;font-weight:300;color:rgba(250,250,248,0.6);line-height:1.9;margin-bottom:16px;}
+.about-text p strong{color:var(--white);font-weight:500;}
+.skills-list{margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.skill-chip{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:8px 12px;border:1px solid rgba(250,250,248,0.1);color:rgba(250,250,248,0.5);border-radius:2px;transition:all 0.2s;}
+.skill-chip:hover{border-color:var(--accent);color:var(--white);}
+
+/* CONTACT */
+#contact{padding:100px 48px;background:var(--white);}
+.contact-inner{max-width:680px;margin:0 auto;}
+.contact-form{margin-top:48px;}
+.cf-group{margin-bottom:20px;}
+.cf-group label{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mid);letter-spacing:0.08em;margin-bottom:8px;}
+.cf-group input,.cf-group textarea{width:100%;background:var(--white);border:1px solid var(--stone);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:14px;padding:12px 16px;outline:none;border-radius:3px;transition:border-color 0.2s;}
+.cf-group input:focus,.cf-group textarea:focus{border-color:var(--accent);}
+.cf-group textarea{height:100px;resize:vertical;}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.cf-submit{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--white);background:var(--ink);border:none;padding:14px 32px;cursor:pointer;border-radius:3px;transition:background 0.2s;width:100%;margin-top:8px;}
+.cf-submit:hover{background:var(--accent);}
+#cf-confirm{display:none;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green);margin-top:12px;text-align:center;}
+
+/* FOOTER */
+footer{padding:40px 48px;border-top:1px solid var(--stone);display:flex;align-items:center;justify-content:space-between;background:var(--white);}
+.footer-logo{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--ink);text-decoration:none;}
+.footer-logo .dot{color:var(--accent);}
+.footer-links{display:flex;gap:24px;}
+.footer-links a{font-size:12px;color:var(--mid);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--ink);}
+.footer-copy{font-size:12px;color:var(--mid);}
+
+/* ANIM */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity 0.7s,transform 0.7s;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:900px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .hero{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .hero-left{padding:80px 20px;}
+  #work,#dataviz,#about,#contact{padding:70px 20px;}
+  .projects-grid{grid-template-columns:1fr;}
+  .viz-grid{grid-template-columns:1fr;}
+  .about-inner{grid-template-columns:1fr;gap:40px;}
+  .skills-bar{padding:18px 20px;}
+  footer{flex-direction:column;gap:16px;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div style="display:flex;align-items:center;gap:20px;">
+    <a href="derrick-hub.html" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.12em;color:rgba(44,43,39,0.35);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#1A6BFF'" onmouseout="this.style.color='rgba(44,43,39,0.35)'">← derrick</a>
+    <a href="dataflow.html" class="nav-logo">Data<span style="color:var(--accent)">Flow</span><span class="dot"></span></a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#work">Projects</a></li>
+    <li><a href="#dataviz">Data Art</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    Open to opportunities
+  </div>
+</nav>
+<div style="position:sticky;top:60px;z-index:90;width:100%;background:rgba(250,250,248,0.94);border-bottom:0.5px solid rgba(44,43,39,0.08);display:flex;align-items:center;justify-content:center;gap:32px;padding:10px 40px;backdrop-filter:blur(12px);">
+  <a href="derrick-hub.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#2C2B27;opacity:0.45;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.45'">
+        <span style="width:6px;height:6px;border-radius:50%;background:#2C2B27;display:inline-block;opacity:0.35;"></span>Derrick.</a><a href="derricks-own-flow.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#EF7B2B;opacity:0.45;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.45'">
+        <span style="width:6px;height:6px;border-radius:50%;background:#EF7B2B;display:inline-block;opacity:0.35;"></span>Own Flow</a><a href="dj-flow.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#333;opacity:0.45;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.45'">
+        <span style="width:6px;height:6px;border-radius:50%;background:#333;display:inline-block;opacity:0.35;"></span>DJ Flow</a><a href="dataflow.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#1A6BFF;opacity:1;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='1'">
+        <span style="width:6px;height:6px;border-radius:50%;background:#1A6BFF;display:inline-block;opacity:1;"></span>DataFlow</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Data Engineer · Data Scientist · Builder</div>
+    <h1 class="hero-name">Derrick.<br><em>DataFlow.</em></h1>
+    <div class="hero-role">Where data meets design.</div>
+    <p class="hero-bio">
+      I build <strong>data pipelines, analytical systems, and visual stories</strong> that turn raw data into decisions. By day I engineer the infrastructure. After hours I use data as a creative medium — because numbers deserve to be beautiful.
+    </p>
+    <div class="hero-btns">
+      <a href="#work" class="btn-solid">View projects</a>
+      <a href="#contact" class="btn-outline">Let's work together</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="art-wrap">
+      <div class="art-label">// live data art — generative</div>
+      <div class="art-canvas">
+        <canvas id="heroCanvas" width="420" height="420"></canvas>
+      </div>
+      <div class="art-caption">particle.flow() — real-time generative visualization</div>
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS BAR -->
+<div class="skills-bar">
+  <div class="skill-item"><div class="skill-dot" style="background:#1A6BFF;"></div><span class="skill-name">Python</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#8B5CF6;"></div><span class="skill-name">SQL</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#00C48C;"></div><span class="skill-name">Apache Spark</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#FF6B35;"></div><span class="skill-name">dbt</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#1A6BFF;"></div><span class="skill-name">Airflow</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#8B5CF6;"></div><span class="skill-name">Snowflake</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#00C48C;"></div><span class="skill-name">BigQuery</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#FF6B35;"></div><span class="skill-name">Scikit-learn</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#1A6BFF;"></div><span class="skill-name">TensorFlow</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#8B5CF6;"></div><span class="skill-name">D3.js</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#00C48C;"></div><span class="skill-name">Kafka</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#FF6B35;"></div><span class="skill-name">AWS</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#1A6BFF;"></div><span class="skill-name">Tableau</span></div>
+  <div class="skill-item"><div class="skill-dot" style="background:#8B5CF6;"></div><span class="skill-name">Docker</span></div>
+</div>
+
+<!-- WORK -->
+<section id="work">
+  <div class="work-header fade-up">
+    <div>
+      <div class="section-eyebrow">Selected work</div>
+      <h2 class="section-title">Projects &<br><em>Case Studies</em></h2>
+    </div>
+    <a href="#contact" style="font-size:13px;font-weight:500;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:6px;transition:gap 0.2s,color 0.2s;" onmouseover="this.style.gap='12px';this.style.color='#1A6BFF'" onmouseout="this.style.gap='6px';this.style.color='var(--ink)'">Hire me →</a>
+  </div>
+
+  <div class="projects-grid fade-up">
+    <div class="project-card">
+      <div class="project-header">
+        <span class="project-num">01</span>
+        <div class="project-tags"><span class="project-tag tag-eng">Engineering</span><span class="project-tag tag-viz">Viz</span></div>
+      </div>
+      <div class="project-title">Real-Time Event Pipeline</div>
+      <p class="project-desc">End-to-end streaming data pipeline ingesting 50M+ events/day from multiple sources, with live dashboards for business stakeholders.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Kafka</span><span class="stack-pill">Spark Streaming</span><span class="stack-pill">Snowflake</span><span class="stack-pill">Airflow</span><span class="stack-pill">Tableau</span>
+      </div>
+      <a href="#" class="project-link">View case study</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <span class="project-num">02</span>
+        <div class="project-tags"><span class="project-tag tag-sci">Science</span><span class="project-tag tag-ml">ML</span></div>
+      </div>
+      <div class="project-title">Churn Prediction Model</div>
+      <p class="project-desc">Machine learning model predicting customer churn 90 days out with 87% accuracy, driving targeted retention campaigns saving $2M ARR.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Python</span><span class="stack-pill">XGBoost</span><span class="stack-pill">BigQuery</span><span class="stack-pill">MLflow</span><span class="stack-pill">dbt</span>
+      </div>
+      <a href="#" class="project-link">View case study</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <span class="project-num">03</span>
+        <div class="project-tags"><span class="project-tag tag-viz">Data Art</span></div>
+      </div>
+      <div class="project-title">City Sound Mapping</div>
+      <p class="project-desc">An artistic data project visualizing Atlanta's sound landscape using audio frequency data collected across 200 locations over 6 months.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Python</span><span class="stack-pill">D3.js</span><span class="stack-pill">PostgreSQL</span><span class="stack-pill">Mapbox</span>
+      </div>
+      <a href="#" class="project-link">View project</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <span class="project-num">04</span>
+        <div class="project-tags"><span class="project-tag tag-eng">Engineering</span><span class="project-tag tag-sci">Science</span></div>
+      </div>
+      <div class="project-title">Content Performance Engine</div>
+      <p class="project-desc">Personal analytics system tracking content performance across platforms — connecting post data to audience growth signals and income metrics.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Python</span><span class="stack-pill">dbt</span><span class="stack-pill">Metabase</span><span class="stack-pill">Instagram API</span><span class="stack-pill">YouTube API</span>
+      </div>
+      <a href="#" class="project-link">View project</a>
+    </div>
+  </div>
+</section>
+
+<!-- DATA VIZ ART -->
+<section id="dataviz">
+  <div class="viz-inner">
+    <div class="fade-up">
+      <div class="section-eyebrow">Data as expression</div>
+      <h2 class="section-title">Beyond the<br><em>Dashboard</em></h2>
+    </div>
+    <div class="viz-grid fade-up">
+      <div class="viz-card">
+        <div class="viz-art" style="background:#0D0D0B;">
+          <canvas id="vc1" width="300" height="180"></canvas>
+        </div>
+        <div class="viz-body">
+          <div class="viz-title">Flow State</div>
+          <div class="viz-sub">Particle system driven by real heart rate data during a 2-hour DJ set.</div>
+          <div class="viz-tag">// generative · biometric data</div>
+        </div>
+      </div>
+      <div class="viz-card">
+        <div class="viz-art" style="background:#F0EFEB;">
+          <canvas id="vc2" width="300" height="180"></canvas>
+        </div>
+        <div class="viz-body">
+          <div class="viz-title">Atlanta Grid</div>
+          <div class="viz-sub">Traffic flow data from 365 days visualized as an evolving city pulse.</div>
+          <div class="viz-tag">// civic data · time series</div>
+        </div>
+      </div>
+      <div class="viz-card">
+        <div class="viz-art" style="background:#0D0D0B;">
+          <canvas id="vc3" width="300" height="180"></canvas>
+        </div>
+        <div class="viz-body">
+          <div class="viz-title">The 30K Arc</div>
+          <div class="viz-sub">A living visualization of the income-building journey — updated weekly.</div>
+          <div class="viz-tag">// personal data · in progress</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="fade-up">
+      <blockquote class="about-quote">"I want to <strong>create and express</strong> more than my W2 allows."</blockquote>
+    </div>
+    <div class="fade-up">
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(250,250,248,0.3);letter-spacing:0.08em;margin-bottom:20px;">// about.me</p>
+      <p>I'm Derrick — a data engineer and scientist building production-grade data systems by day and exploring data as a creative medium after hours. I believe <strong>data is one of the most powerful storytelling tools of our time.</strong></p>
+      <p>When I'm not building pipelines I'm riding motorcycles, DJing across Atlanta, and documenting the whole journey publicly through Derrick's Own Flow.</p>
+      <p>This portfolio is the intersection of <strong>technical rigor and creative ambition</strong> — proof that you can be both.</p>
+      <div class="skills-list">
+        <div class="skill-chip">Data Engineering</div>
+        <div class="skill-chip">Data Science</div>
+        <div class="skill-chip">ML / AI</div>
+        <div class="skill-chip">Data Visualization</div>
+        <div class="skill-chip">Pipeline Architecture</div>
+        <div class="skill-chip">Analytics Engineering</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="fade-up">
+      <div class="section-eyebrow">Get in touch</div>
+      <h2 class="section-title">Let's build<br><em>something.</em></h2>
+      <p style="font-size:15px;color:var(--mid);font-weight:300;line-height:1.8;margin-top:16px;">Open to full-time roles, freelance projects, and data art collaborations. If the work is interesting, I want to hear about it.</p>
+    </div>
+    <div class="contact-form fade-up">
+      <div class="cf-row">
+        <div class="cf-group"><label>// name</label><input type="text" placeholder="Your name" id="cf-name"/></div>
+        <div class="cf-group"><label>// email</label><input type="email" placeholder="your@email.com" id="cf-email"/></div>
+      </div>
+      <div class="cf-group"><label>// what are we building?</label><textarea placeholder="Project, role, or idea..." id="cf-msg"></textarea></div>
+      <button class="cf-submit" onclick="handleContact()">Send it →</button>
+      <p id="cf-confirm">// message received. I'll respond within 48 hours.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="dataflow.html" class="footer-logo">Data<span class="dot">Flow</span></a>
+  <div class="footer-links">
+    <a href="#work">Work</a>
+    <a href="#dataviz">Data Art</a>
+    <a href="derrick-hub.html">Home</a>
+    <a href="derricks-own-flow.html">Derrick's Own Flow</a>
+    <a href="dj-flow.html">DJ Flow</a>
+    <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+    <a href="https://github.com" target="_blank">GitHub</a>
+  </div>
+  <span class="footer-copy">&copy; 2025 DataFlow · Derrick</span>
+</footer>
+
+<script>
+// ── HERO CANVAS ──
+const hc = document.getElementById('heroCanvas');
+const ctx = hc.getContext('2d');
+hc.width = 420; hc.height = 420;
+const particles = [];
+for(let i=0;i<120;i++){
+  particles.push({
+    x: Math.random()*420, y: Math.random()*420,
+    vx: (Math.random()-0.5)*0.8, vy: (Math.random()-0.5)*0.8,
+    r: Math.random()*2+0.5,
+    color: ['#1A6BFF','#8B5CF6','#00C48C','#FF6B35'][Math.floor(Math.random()*4)],
+    alpha: Math.random()*0.7+0.3
+  });
+}
+function drawHero(){
+  ctx.fillStyle = 'rgba(240,239,235,0.15)';
+  ctx.fillRect(0,0,420,420);
+  particles.forEach((p,i) => {
+    p.x += p.vx; p.y += p.vy;
+    if(p.x<0||p.x>420) p.vx*=-1;
+    if(p.y<0||p.y>420) p.vy*=-1;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.alpha;
+    ctx.fill();
+    // connections
+    for(let j=i+1;j<particles.length;j++){
+      const p2=particles[j];
+      const dx=p.x-p2.x, dy=p.y-p2.y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<60){
+        ctx.beginPath();
+        ctx.moveTo(p.x,p.y);
+        ctx.lineTo(p2.x,p2.y);
+        ctx.strokeStyle = p.color;
+        ctx.globalAlpha = (1-dist/60)*0.15;
+        ctx.lineWidth=0.5;
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha=1;
+  });
+  requestAnimationFrame(drawHero);
+}
+drawHero();
+
+// ── VIZ CARD 1 (particles dark) ──
+const v1 = document.getElementById('vc1');
+const c1 = v1.getContext('2d');
+v1.width=300;v1.height=180;
+const vp1=[];
+for(let i=0;i<60;i++) vp1.push({x:Math.random()*300,y:Math.random()*180,vx:(Math.random()-0.5)*1.2,vy:(Math.random()-0.5)*1.2,r:Math.random()*2+0.5,c:['#D4FF00','#FF2D78','#00E5FF'][Math.floor(Math.random()*3)]});
+function drawV1(){
+  c1.fillStyle='rgba(13,13,11,0.2)';c1.fillRect(0,0,300,180);
+  vp1.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>300)p.vx*=-1;if(p.y<0||p.y>180)p.vy*=-1;c1.beginPath();c1.arc(p.x,p.y,p.r,0,Math.PI*2);c1.fillStyle=p.c;c1.globalAlpha=0.8;c1.fill();c1.globalAlpha=1;});
+  requestAnimationFrame(drawV1);
+}
+drawV1();
+
+// ── VIZ CARD 2 (city grid) ──
+const v2 = document.getElementById('vc2');
+const c2 = v2.getContext('2d');
+v2.width=300;v2.height=180;
+const grid2=[];
+for(let i=0;i<15;i++) for(let j=0;j<9;j++) grid2.push({x:i*20+10,y:j*20+10,h:Math.random(),phase:Math.random()*Math.PI*2,speed:0.02+Math.random()*0.03});
+function drawV2(){
+  c2.clearRect(0,0,300,180);
+  grid2.forEach(g=>{
+    g.phase+=g.speed;
+    g.h=0.2+0.8*(Math.sin(g.phase)*0.5+0.5);
+    const intensity=Math.floor(g.h*200)+55;
+    c2.fillStyle=`rgb(${intensity},${intensity-40},${intensity-80})`;
+    c2.fillRect(g.x-6,g.y-6,12,12);
+  });
+  requestAnimationFrame(drawV2);
+}
+drawV2();
+
+// ── VIZ CARD 3 (arc/progress) ──
+const v3=document.getElementById('vc3');
+const c3=v3.getContext('2d');
+v3.width=300;v3.height=180;
+let arcProgress=0;
+function drawV3(){
+  c3.clearRect(0,0,300,180);
+  arcProgress+=0.003;
+  const t=Math.min(arcProgress,1);
+  const cx=150,cy=130,r=90;
+  c3.beginPath();c3.arc(cx,cy,r,Math.PI,Math.PI*2,false);
+  c3.strokeStyle='rgba(26,107,255,0.1)';c3.lineWidth=12;c3.stroke();
+  c3.beginPath();c3.arc(cx,cy,r,Math.PI,Math.PI+(Math.PI*t),false);
+  c3.strokeStyle='#1A6BFF';c3.lineWidth=12;c3.lineCap='round';c3.stroke();
+  c3.fillStyle='rgba(250,250,248,0.8)';c3.font='bold 22px Fraunces,serif';c3.textAlign='center';
+  c3.fillText(Math.round(t*100)+'%',cx,cy-8);
+  c3.fillStyle='rgba(250,250,248,0.3)';c3.font='10px IBM Plex Mono,monospace';
+  c3.fillText('toward 30K',cx,cy+14);
+  if(arcProgress>=1.2) arcProgress=0;
+  requestAnimationFrame(drawV3);
+}
+drawV3();
+
+// ── SCROLL OBSERVER ──
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+
+// ── CONTACT ──
+function handleContact(){
+  const n=document.getElementById('cf-name').value;
+  const e=document.getElementById('cf-email').value;
+  if(n&&e){
+    document.getElementById('cf-name').value='';
+    document.getElementById('cf-email').value='';
+    document.getElementById('cf-msg').value='';
+    document.getElementById('cf-confirm').style.display='block';
+  }
+}
+</script>
+</body>
+</html>

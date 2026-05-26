@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Derrick's Own Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --midnight: #1A1208;
+    --midnight-2: #251A0D;
+    --midnight-3: #2F2010;
+    --ember: #EF7B2B;
+    --ember-dim: #C4622D;
+    --rust: #C4622D;
+    --earth: #8C5E3C;
+    --cream: #F2E8D9;
+    --cream-dim: #C8B89A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--midnight);
+    color: var(--cream);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    background: linear-gradient(to bottom, rgba(26,18,8,0.95) 0%, rgba(26,18,8,0) 100%);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.06em;
+    color: var(--cream);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--ember); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ember); }
+
+  .nav-social {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .nav-social a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    text-decoration: none;
+    padding: 6px 14px;
+    border: 0.5px solid rgba(242,232,217,0.2);
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .nav-social a:hover {
+    background: var(--ember);
+    border-color: var(--ember);
+    color: var(--midnight);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 40px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(196,98,45,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(140,94,60,0.12) 0%, transparent 60%),
+      var(--midnight);
+  }
+
+  .hero-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+
+  .hero-line {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 58%;
+    width: 0.5px;
+    background: linear-gradient(to bottom, transparent 0%, rgba(239,123,43,0.3) 30%, rgba(239,123,43,0.3) 70%, transparent 100%);
+  }
+
+  .hero-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 0.5px;
+    background: var(--ember);
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 12vw, 160px);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+  }
+
+  .hero-title .accent { color: var(--ember); }
+
+  .hero-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-tagline {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--cream-dim);
+    line-height: 1.6;
+    max-width: 360px;
+  }
+
+  .hero-tagline strong {
+    color: var(--cream);
+    font-weight: 500;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+  }
+
+  .btn-primary {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--midnight);
+    background: var(--ember);
+    border: none;
+    padding: 14px 28px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 2px;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover { background: #f08c3a; transform: translateY(-1px); }
+
+  .btn-ghost {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cream);
+    background: transparent;
+    border: 0.5px solid rgba(242,232,217,0.3);
+    padding: 14px 28px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--ember);
+    color: var(--ember);
+    transform: translateY(-1px);
+  }
+
+  /* ─── SCROLL INDICATOR ─── */
+  .scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.4;
+    animation: scrollPulse 2s ease-in-out infinite;
+    z-index: 1;
+  }
+
+  .scroll-hint span {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .scroll-hint-line {
+    width: 0.5px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--cream), transparent);
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+    50% { opacity: 0.7; transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ─── SECTIONS SHARED ─── */
+  section { padding: 100px 40px; }
+
+  .section-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-eyebrow::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 0.5px;
+    background: var(--ember);
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 6vw, 80px);
+    letter-spacing: 0.03em;
+    line-height: 1;
+    margin-bottom: 24px;
+  }
+
+  /* ─── ABOUT ─── */
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .about-text p {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--cream-dim);
+    margin-bottom: 20px;
+  }
+
+  .about-text p strong {
+    color: var(--cream);
+    font-weight: 500;
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(242,232,217,0.08);
+    border: 0.5px solid rgba(242,232,217,0.08);
+  }
+
+  .stat-box {
+    background: var(--midnight-2);
+    padding: 32px 28px;
+    transition: background 0.2s;
+  }
+
+  .stat-box:hover { background: var(--midnight-3); }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    color: var(--ember);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: var(--cream-dim);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  /* ─── PROGRESSION ─── */
+  #progression { background: var(--midnight-2); }
+
+  .progression-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 56px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 8px;
+  }
+
+  .filter-tab {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    background: transparent;
+    border: 0.5px solid rgba(242,232,217,0.15);
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .filter-tab.active,
+  .filter-tab:hover {
+    background: var(--ember);
+    border-color: var(--ember);
+    color: var(--midnight);
+  }
+
+  .progression-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .prog-card {
+    position: relative;
+    aspect-ratio: 9/16;
+    background: var(--midnight-3);
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .prog-card-inner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(26,18,8,0.92) 0%, rgba(26,18,8,0.2) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .prog-card:hover .prog-card-inner { opacity: 1; }
+
+  .prog-card-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 120px;
+    color: rgba(239,123,43,0.04);
+    letter-spacing: 0.02em;
+    user-select: none;
+  }
+
+  .prog-date {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 6px;
+  }
+
+  .prog-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+
+  .prog-tag {
+    font-size: 11px;
+    color: var(--cream-dim);
+    font-weight: 300;
+  }
+
+  .prog-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .prog-plus {
+    width: 36px;
+    height: 36px;
+    border: 0.5px solid rgba(242,232,217,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: rgba(242,232,217,0.2);
+  }
+
+  .prog-placeholder span {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(242,232,217,0.15);
+  }
+
+  /* ─── MINDSET ─── */
+  .mindset-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .principles {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 20px;
+  }
+
+  .principle {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 24px;
+    background: var(--midnight-2);
+    border-left: 2px solid transparent;
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .principle:hover {
+    background: var(--midnight-3);
+    border-left-color: var(--ember);
+  }
+
+  .principle-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--ember);
+    line-height: 1;
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
+  .principle-text strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .principle-text p {
+    font-size: 13px;
+    color: var(--cream-dim);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .quote-block {
+    padding: 48px;
+    background: var(--midnight-2);
+    border-left: 3px solid var(--ember);
+    position: relative;
+  }
+
+  .quote-mark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 120px;
+    color: var(--ember);
+    opacity: 0.08;
+    position: absolute;
+    top: 0; left: 20px;
+    line-height: 1;
+  }
+
+  .quote-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 4vw, 52px);
+    letter-spacing: 0.03em;
+    line-height: 1.1;
+    color: var(--cream);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 24px;
+  }
+
+  .quote-sub {
+    font-size: 14px;
+    color: var(--cream-dim);
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 520px;
+  }
+
+  /* ─── CONNECT ─── */
+  #connect { background: var(--midnight-2); }
+
+  .connect-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .connect-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 56px;
+  }
+
+  .connect-card {
+    background: var(--midnight);
+    padding: 40px 32px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.25s;
+    text-decoration: none;
+    display: block;
+  }
+
+  .connect-card:hover {
+    background: var(--midnight-3);
+    border-bottom-color: var(--ember);
+    transform: translateY(-4px);
+  }
+
+  .connect-card-icon {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    color: var(--ember);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .connect-card-icon::before {
+    content: '';
+    width: 20px;
+    height: 0.5px;
+    background: var(--ember);
+    display: block;
+  }
+
+  .connect-card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 0.04em;
+    color: var(--cream);
+    margin-bottom: 12px;
+  }
+
+  .connect-card p {
+    font-size: 13px;
+    color: var(--cream-dim);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .connect-card .arrow {
+    margin-top: 24px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ember);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: gap 0.2s;
+  }
+
+  .connect-card:hover .arrow { gap: 14px; }
+
+  /* ─── NEWSLETTER ─── */
+  .newsletter-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .newsletter-inner .section-eyebrow {
+    justify-content: center;
+  }
+
+  .newsletter-inner .section-eyebrow::before { display: none; }
+
+  .newsletter-inner p {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--cream-dim);
+    line-height: 1.7;
+    margin-bottom: 40px;
+  }
+
+  .email-form {
+    display: flex;
+    gap: 0;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .email-form input {
+    flex: 1;
+    background: var(--midnight-2);
+    border: 0.5px solid rgba(242,232,217,0.15);
+    border-right: none;
+    color: var(--cream);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    padding: 14px 20px;
+    outline: none;
+    border-radius: 0;
+    transition: border-color 0.2s;
+  }
+
+  .email-form input::placeholder { color: rgba(242,232,217,0.25); }
+  .email-form input:focus { border-color: rgba(239,123,43,0.4); }
+
+  .email-form button {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--ember);
+    color: var(--midnight);
+    border: none;
+    padding: 14px 24px;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .email-form button:hover { background: #f08c3a; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 40px;
+    border-top: 0.5px solid rgba(242,232,217,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    color: var(--cream);
+    text-decoration: none;
+  }
+
+  .footer-logo span { color: var(--ember); }
+
+  .footer-copy {
+    font-size: 12px;
+    color: rgba(242,232,217,0.25);
+  }
+
+  /* ─── ANIMATIONS ─── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 0 20px 60px; }
+    section { padding: 70px 20px; }
+    .about { grid-template-columns: 1fr; gap: 40px; }
+    .progression-grid { grid-template-columns: repeat(2, 1fr); }
+    .mindset-inner { grid-template-columns: 1fr; gap: 40px; }
+    .connect-grid { grid-template-columns: 1fr; }
+    .progression-header { flex-direction: column; align-items: flex-start; gap: 24px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div style="display:flex;align-items:center;gap:20px;">
+    <a href="derrick-hub.html" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:rgba(242,232,217,0.4);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#EF7B2B'" onmouseout="this.style.color='rgba(242,232,217,0.4)'">← Derrick</a>
+    <a href="derricks-own-flow.html" class="nav-logo">Derrick's <span>Own</span> Flow</a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#progression">Progression</a></li>
+    <li><a href="#mindset">Mindset</a></li>
+    <li><a href="#connect">Connect</a></li>
+  </ul>
+  <div class="nav-social">
+    <a href="https://instagram.com/derricksownflow" target="_blank">Instagram</a>
+    <a href="https://youtube.com/@derricksownflow" target="_blank">YouTube</a>
+  </div>
+</nav>
+<div style="position:sticky;top:60px;z-index:90;width:100%;background:rgba(26,18,8,0.92);border-bottom:0.5px solid rgba(242,232,217,0.07);display:flex;align-items:center;justify-content:center;gap:32px;padding:10px 40px;backdrop-filter:blur(12px);">
+  <a href="derrick-hub.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#F2E8D9;opacity:0.45;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.45'">
+        <span style="width:6px;height:6px;border-radius:50%;background:#F2E8D9;display:inline-block;opacity:0.35;"></span>Derrick.</a><a href="derricks-own-flow.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#EF7B2B;opacity:1;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='1'">
+        <span style="width:6px;height:6px;border-radius:50%;background:#EF7B2B;display:inline-block;opacity:1;"></span>Own Flow</a><a href="dj-flow.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#D4FF00;opacity:0.45;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.45'">
+        <span style="width:6px;height:6px;border-radius:50%;background:#D4FF00;display:inline-block;opacity:0.35;"></span>DJ Flow</a><a href="dataflow.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#1A6BFF;opacity:0.45;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.45'">
+        <span style="width:6px;height:6px;border-radius:50%;background:#1A6BFF;display:inline-block;opacity:0.35;"></span>DataFlow</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-line"></div>
+
+  <div class="hero-label">Wheelie creator · Mindset builder · Atlanta</div>
+
+  <h1 class="hero-title">
+    DERRICK'S<br>
+    OWN<br>
+    <span class="accent">FLOW.</span>
+  </h1>
+
+  <div class="hero-bottom">
+    <p class="hero-tagline">
+      <strong>Raw. Real. Rising.</strong><br>
+      Living the life I used to pray for — and building the next one in public. Every trick, every fall, every lesson. This is the unfiltered journey.
+    </p>
+    <div class="hero-cta">
+      <a href="#progression" class="btn-primary">See the progression</a>
+      <a href="#connect" class="btn-ghost">Ride with me</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-hint-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about">
+    <div class="about-text fade-up">
+      <div class="section-eyebrow">The story</div>
+      <h2 class="section-title">BUILT<br>FROM THE<br>GROUND UP</h2>
+      <p>I'm Derrick — a wheelie creator and mindset builder who realised one day that I was already living the life I used to pray for. So I made a decision: <strong>use every moment to build something bigger.</strong></p>
+      <p>This site is my third place. Not just Instagram, not just YouTube — but a home for everything I'm working on, everything I'm learning, and every milestone worth remembering.</p>
+      <p>The wheelies are the hook. The mindset is the message. <strong>The journey is the content.</strong></p>
+      <a href="#progression" class="btn-primary" style="margin-top:12px; display:inline-block;">See my progression</a>
+    </div>
+    <div class="about-stats fade-up">
+      <div class="stat-box">
+        <div class="stat-num" id="stat-days">0</div>
+        <div class="stat-label">Days into the<br>content journey</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Hours on two<br>wheels</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">1</div>
+        <div class="stat-label">Goal: build to<br>$30K/month</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Real. No filters.<br>No fake flexing.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRESSION -->
+<section id="progression">
+  <div class="progression-header fade-up">
+    <div>
+      <div class="section-eyebrow">The vault</div>
+      <h2 class="section-title">PROGRESSION<br>LOG</h2>
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterCards('all', this)">All</button>
+      <button class="filter-tab" onclick="filterCards('tutorial', this)">Tutorial</button>
+      <button class="filter-tab" onclick="filterCards('progress', this)">Progress</button>
+      <button class="filter-tab" onclick="filterCards('mindset', this)">Mindset</button>
+    </div>
+  </div>
+
+  <div class="progression-grid" id="prog-grid">
+
+    <div class="prog-card" data-type="progress">
+      <div class="prog-card-bg">01</div>
+      <div class="prog-placeholder">
+        <div class="prog-plus">+</div>
+        <span>Drop #1 coming soon</span>
+      </div>
+      <div class="prog-card-inner">
+        <div class="prog-date">Week 1 · 2025</div>
+        <div class="prog-title">THE FIRST CLIP</div>
+        <div class="prog-tag">Progress · Starting point</div>
+      </div>
+    </div>
+
+    <div class="prog-card" data-type="tutorial">
+      <div class="prog-card-bg">02</div>
+      <div class="prog-placeholder">
+        <div class="prog-plus">+</div>
+        <span>Tutorial drop soon</span>
+      </div>
+      <div class="prog-card-inner">
+        <div class="prog-date">Week 1 · 2025</div>
+        <div class="prog-title">FIRST TUTORIAL</div>
+        <div class="prog-tag">Tutorial · Technique breakdown</div>
+      </div>
+    </div>
+
+    <div class="prog-card" data-type="mindset">
+      <div class="prog-card-bg">03</div>
+      <div class="prog-placeholder">
+        <div class="prog-plus">+</div>
+        <span>Mindset drop soon</span>
+      </div>
+      <div class="prog-card-inner">
+        <div class="prog-date">Week 1 · 2025</div>
+        <div class="prog-title">THE MINDSET</div>
+        <div class="prog-tag">Mindset · Why I started</div>
+      </div>
+    </div>
+
+    <div class="prog-card" data-type="progress">
+      <div class="prog-card-bg">04</div>
+      <div class="prog-placeholder">
+        <div class="prog-plus">+</div>
+        <span>Coming week 2</span>
+      </div>
+      <div class="prog-card-inner">
+        <div class="prog-date">Week 2 · 2025</div>
+        <div class="prog-title">WEEK 2 UPDATE</div>
+        <div class="prog-tag">Progress · Milestone</div>
+      </div>
+    </div>
+
+    <div class="prog-card" data-type="tutorial">
+      <div class="prog-card-bg">05</div>
+      <div class="prog-placeholder">
+        <div class="prog-plus">+</div>
+        <span>Coming week 2</span>
+      </div>
+      <div class="prog-card-inner">
+        <div class="prog-date">Week 2 · 2025</div>
+        <div class="prog-title">TECHNIQUE DEEP DIVE</div>
+        <div class="prog-tag">Tutorial · Step by step</div>
+      </div>
+    </div>
+
+    <div class="prog-card" data-type="progress">
+      <div class="prog-card-bg">06</div>
+      <div class="prog-placeholder">
+        <div class="prog-plus">+</div>
+        <span>Coming week 3</span>
+      </div>
+      <div class="prog-card-inner">
+        <div class="prog-date">Week 3 · 2025</div>
+        <div class="prog-title">30 DAY CHECK IN</div>
+        <div class="prog-tag">Progress · Reflection</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MINDSET -->
+<section id="mindset">
+  <div class="mindset-inner">
+    <div class="fade-up">
+      <div class="section-eyebrow">The principles</div>
+      <h2 class="section-title">HOW I<br>MOVE</h2>
+      <div class="principles">
+        <div class="principle">
+          <div class="principle-num">01</div>
+          <div class="principle-text">
+            <strong>The life you have is the life you prayed for</strong>
+            <p>Gratitude is the starting point for everything. Own where you are before building what's next.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">02</div>
+          <div class="principle-text">
+            <strong>Fun is the fuel, not the reward</strong>
+            <p>Build something you love doing before you love the results. The hustle should excite you.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">03</div>
+          <div class="principle-text">
+            <strong>Show the fall, not just the landing</strong>
+            <p>Real progression includes struggle. The fails are as important as the wins.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">04</div>
+          <div class="principle-text">
+            <strong>Consistency beats perfection every time</strong>
+            <p>Showing up raw beats waiting until it's perfect. The reps build everything.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fade-up">
+      <div class="quote-block">
+        <div class="quote-mark">"</div>
+        <div class="quote-text">I REALISED I WAS ALREADY LIVING WHAT I USED TO PRAY FOR.</div>
+        <p class="quote-sub">That moment changed everything. It wasn't the end of wanting more — it was the realisation that gratitude and ambition can live side by side. You can be thankful for where you are and still be hungry for where you're going.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONNECT -->
+<section id="connect">
+  <div class="connect-inner">
+    <div class="fade-up">
+      <div class="section-eyebrow">Find me everywhere</div>
+      <h2 class="section-title">LET'S<br>RIDE TOGETHER</h2>
+    </div>
+    <div class="connect-grid fade-up">
+      <a href="https://instagram.com/derricksownflow" target="_blank" class="connect-card">
+        <div class="connect-card-icon">Instagram</div>
+        <h3>DAILY DROPS</h3>
+        <p>Reels, stories, and real-time updates. The fastest way to catch every clip, thought, and milestone as it happens.</p>
+        <div class="arrow">Follow along &#8594;</div>
+      </a>
+      <a href="https://youtube.com/@derricksownflow" target="_blank" class="connect-card">
+        <div class="connect-card-icon">YouTube</div>
+        <h3>THE FULL STORY</h3>
+        <p>Deeper dives, longer edits, and the complete progression archive. Every video is a chapter in the journey.</p>
+        <div class="arrow">Subscribe &#8594;</div>
+      </a>
+      <a href="#newsletter" class="connect-card">
+        <div class="connect-card-icon">Newsletter</div>
+        <h3>THE INNER CIRCLE</h3>
+        <p>Weekly breakdown of what I learned, what I'm working on, and the mindset principles keeping me moving forward.</p>
+        <div class="arrow">Join the list &#8594;</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section id="newsletter">
+  <div class="newsletter-inner fade-up">
+    <div class="section-eyebrow">Stay locked in</div>
+    <h2 class="section-title" style="font-size:clamp(36px,5vw,68px);">THE WEEKLY<br>BREAKDOWN</h2>
+    <p>One email a week. What I learned, what I built, what moved me. No spam — just the real stuff from someone building in public.</p>
+    <div class="email-form">
+      <input type="email" placeholder="your@email.com" id="email-input" />
+      <button onclick="handleSubscribe()">Join the ride</button>
+    </div>
+    <p id="sub-confirm" style="font-size:13px; color:var(--ember); margin-top:16px; display:none;">You're in. See you in the inbox.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="derricks-own-flow.html" class="footer-logo">Derrick's <span>Own</span> Flow</a>
+  <div style="display:flex;gap:24px;align-items:center;">
+    <a href="derrick-hub.html" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,232,217,0.35);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#EF7B2B'" onmouseout="this.style.color='rgba(242,232,217,0.35)'">Home</a>
+    <a href="dj-flow.html" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,232,217,0.35);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#EF7B2B'" onmouseout="this.style.color='rgba(242,232,217,0.35)'">DJ Flow</a>
+    <a href="dataflow.html" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,232,217,0.35);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#EF7B2B'" onmouseout="this.style.color='rgba(242,232,217,0.35)'">DataFlow</a>
+    <a href="https://instagram.com/derricksownflow" target="_blank" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,232,217,0.35);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#EF7B2B'" onmouseout="this.style.color='rgba(242,232,217,0.35)'">IG</a>
+    <a href="https://youtube.com/@derricksownflow" target="_blank" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(242,232,217,0.35);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#EF7B2B'" onmouseout="this.style.color='rgba(242,232,217,0.35)'">YT</a>
+  </div>
+  <span class="footer-copy">Built in public. &copy; 2025 Derrick's Own Flow.</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  function animateCounter(el, target, duration) {
+    let start = 0;
+    const step = Math.ceil(target / (duration / 16));
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) { start = target; clearInterval(timer); }
+      el.textContent = start;
+    }, 16);
+  }
+
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const startDate = new Date('2025-01-01');
+        const today = new Date();
+        const days = Math.max(1, Math.floor((today - startDate) / 86400000));
+        animateCounter(document.getElementById('stat-days'), days, 1200);
+        statObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  const statEl = document.getElementById('stat-days');
+  if (statEl) statObserver.observe(statEl.closest('section'));
+
+  function filterCards(type, btn) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.prog-card').forEach(card => {
+      if (type === 'all' || card.dataset.type === type) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function handleSubscribe() {
+    const val = document.getElementById('email-input').value.trim();
+    if (val && val.includes('@')) {
+      document.getElementById('email-input').value = '';
+      document.getElementById('sub-confirm').style.display = 'block';
+    }
+  }
+
+  document.getElementById('email-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleSubscribe();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Derrick — Enter the Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #0A0806;
+  --void2: #120F0A;
+  --void3: #1C1710;
+  --ember: #EF7B2B;
+  --ember2: #C4622D;
+  --acid: #D4FF00;
+  --blue: #1A6BFF;
+  --cream: #F2E8D9;
+  --cream2: #C8B89A;
+  --cream3: #7A6E62;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--void);
+  color: var(--cream);
+  font-family: 'Space Grotesk', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─── CURSOR ─── */
+#cur { position:fixed; width:10px; height:10px; border-radius:50%; background:var(--ember); pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width 0.25s,height 0.25s,background 0.25s,opacity 0.25s; mix-blend-mode:screen; }
+#cur.hover { width:48px; height:48px; opacity:0.6; }
+#cur-ring { position:fixed; width:36px; height:36px; border-radius:50%; border:1px solid rgba(239,123,43,0.3); pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:all 0.08s linear; }
+
+/* ─── LOADER ─── */
+#loader {
+  position:fixed; inset:0; z-index:1000;
+  background:var(--void);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px;
+  transition:opacity 0.8s, visibility 0.8s;
+}
+#loader.gone { opacity:0; visibility:hidden; }
+.loader-name {
+  font-family:'Playfair Display',serif;
+  font-size:48px;
+  font-weight:900;
+  letter-spacing:-0.02em;
+  color:var(--cream);
+  overflow:hidden;
+}
+.loader-name span { color:var(--ember); }
+.loader-bar-wrap { width:200px; height:1px; background:rgba(242,232,217,0.1); }
+.loader-bar { height:100%; background:var(--ember); width:0%; transition:width 2s cubic-bezier(0.4,0,0.2,1); }
+.loader-tag {
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.15em;
+  color:var(--cream3);
+  text-transform:uppercase;
+}
+
+/* ─── CANVAS BG ─── */
+#bg-canvas {
+  position:fixed; inset:0; z-index:0; opacity:0.35;
+}
+
+/* ─── NAV ─── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:28px 56px;
+  background:linear-gradient(to bottom, rgba(10,8,6,0.7) 0%, transparent 100%);
+}
+.nav-logo {
+  font-family:'Playfair Display',serif;
+  font-size:18px; font-weight:900;
+  color:var(--cream); text-decoration:none;
+  letter-spacing:-0.01em;
+}
+.nav-logo em { color:var(--ember); font-style:italic; }
+.nav-right { display:flex; align-items:center; gap:32px; }
+.nav-link {
+  font-family:'Space Mono',monospace;
+  font-size:10px; letter-spacing:0.15em;
+  text-transform:uppercase; color:var(--cream3);
+  text-decoration:none; transition:color 0.2s;
+}
+.nav-link:hover { color:var(--ember); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height:100vh;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:0 56px;
+  position:relative; z-index:1;
+  overflow:hidden;
+}
+
+.hero-eyebrow {
+  font-family:'Space Mono',monospace;
+  font-size:10px; letter-spacing:0.25em; text-transform:uppercase;
+  color:var(--ember); margin-bottom:28px;
+  display:flex; align-items:center; gap:14px;
+  opacity:0; animation:fadeUp 1s 0.5s forwards;
+}
+.hero-eyebrow::before { content:''; width:40px; height:1px; background:var(--ember); display:block; }
+
+.hero-title {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(64px,11vw,150px);
+  font-weight:900;
+  line-height:0.92;
+  letter-spacing:-0.03em;
+  max-width:900px;
+  opacity:0; animation:fadeUp 1s 0.7s forwards;
+}
+.hero-title .name { display:block; }
+.hero-title .italic { display:block; font-style:italic; font-weight:400; color:var(--ember); }
+.hero-title .outline {
+  display:block;
+  -webkit-text-stroke:1px var(--cream2);
+  color:transparent;
+}
+
+.hero-sub {
+  margin-top:40px;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  opacity:0; animation:fadeUp 1s 0.9s forwards;
+}
+.hero-desc {
+  font-size:16px; font-weight:300; color:var(--cream2);
+  line-height:1.8; max-width:460px;
+}
+.hero-desc strong { color:var(--cream); font-weight:500; }
+
+.hero-scroll {
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  opacity:0.4; animation:bounce 2s 2s ease-in-out infinite;
+}
+.hero-scroll span { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--cream3); }
+.hero-scroll-line { width:1px; height:48px; background:linear-gradient(to bottom,var(--cream),transparent); }
+
+@keyframes bounce { 0%,100%{transform:translateY(0);}50%{transform:translateY(8px);} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);} }
+
+/* ─── WORLDS ─── */
+#worlds { position:relative; z-index:1; }
+
+.worlds-intro {
+  padding:80px 56px 40px;
+  display:flex; align-items:flex-end; justify-content:space-between;
+}
+.worlds-label {
+  font-family:'Space Mono',monospace;
+  font-size:10px; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--ember); margin-bottom:12px;
+}
+.worlds-title {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(36px,5vw,64px);
+  font-weight:700; line-height:1.05;
+}
+.worlds-title em { font-style:italic; color:var(--ember); }
+.worlds-tagline {
+  font-size:14px; font-weight:300; color:var(--cream3);
+  max-width:340px; line-height:1.8; text-align:right;
+}
+
+/* World cards — full bleed panel layout */
+.worlds-panels {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  height:80vh;
+  border-top:1px solid rgba(242,232,217,0.06);
+}
+
+.world-panel {
+  position:relative; overflow:hidden;
+  border-right:1px solid rgba(242,232,217,0.06);
+  cursor:none;
+  transition:flex 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.world-panel:last-child { border-right:none; }
+
+.world-bg {
+  position:absolute; inset:0;
+  transition:transform 0.8s cubic-bezier(0.4,0,0.2,1), opacity 0.5s;
+}
+.world-panel:hover .world-bg { transform:scale(1.04); }
+
+.world-overlay {
+  position:absolute; inset:0;
+  transition:opacity 0.4s;
+}
+.world-panel:hover .world-overlay { opacity:0.75; }
+
+.world-content {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:40px 36px;
+}
+
+.world-tag {
+  font-family:'Space Mono',monospace;
+  font-size:9px; letter-spacing:0.2em; text-transform:uppercase;
+  margin-bottom:12px;
+  opacity:0.7; transition:opacity 0.3s;
+}
+.world-panel:hover .world-tag { opacity:1; }
+
+.world-name {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,3.5vw,48px);
+  font-weight:900; letter-spacing:-0.02em;
+  line-height:1; margin-bottom:12px;
+  transform:translateY(8px); transition:transform 0.4s;
+}
+.world-panel:hover .world-name { transform:translateY(0); }
+
+.world-desc {
+  font-size:13px; font-weight:300; line-height:1.7;
+  color:rgba(242,232,217,0.7);
+  max-width:260px;
+  opacity:0; transform:translateY(12px);
+  transition:opacity 0.4s 0.05s, transform 0.4s 0.05s;
+}
+.world-panel:hover .world-desc { opacity:1; transform:translateY(0); }
+
+.world-cta {
+  margin-top:20px;
+  font-family:'Space Mono',monospace;
+  font-size:10px; letter-spacing:0.15em; text-transform:uppercase;
+  display:flex; align-items:center; gap:10px;
+  opacity:0; transform:translateY(8px);
+  transition:opacity 0.4s 0.1s, transform 0.4s 0.1s, gap 0.2s;
+  text-decoration:none;
+}
+.world-cta::after { content:'→'; font-size:12px; transition:transform 0.2s; }
+.world-panel:hover .world-cta { opacity:1; transform:translateY(0); }
+.world-panel:hover .world-cta:hover { gap:16px; }
+.world-panel:hover .world-cta:hover::after { transform:translateX(4px); }
+
+/* panel 1 — Derrick's Own Flow */
+.panel-flow .world-bg { background:linear-gradient(160deg, #2F1A08 0%, #1A1208 60%, #0A0806 100%); }
+.panel-flow .world-overlay { background:linear-gradient(to top,rgba(239,123,43,0.25) 0%,transparent 60%); }
+.panel-flow .world-tag { color:var(--ember); }
+.panel-flow .world-name { color:var(--cream); }
+.panel-flow .world-cta { color:var(--ember); }
+.panel-flow-art { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0.12; }
+
+/* panel 2 — DJ Flow */
+.panel-dj .world-bg { background:linear-gradient(160deg, #0A0A08 0%, #080808 100%); }
+.panel-dj .world-overlay { background:linear-gradient(to top,rgba(212,255,0,0.2) 0%,transparent 60%); }
+.panel-dj .world-tag { color:var(--acid); }
+.panel-dj .world-name { color:var(--acid); }
+.panel-dj .world-cta { color:var(--acid); }
+
+/* panel 3 — DataFlow */
+.panel-data .world-bg { background:linear-gradient(160deg, #080E1C 0%, #0A0806 100%); }
+.panel-data .world-overlay { background:linear-gradient(to top,rgba(26,107,255,0.25) 0%,transparent 60%); }
+.panel-data .world-tag { color:var(--blue); }
+.panel-data .world-name { color:var(--cream); }
+.panel-data .world-name em { color:var(--blue); font-style:normal; }
+.panel-data .world-cta { color:var(--blue); }
+
+/* ─── ABOUT ─── */
+#about {
+  position:relative; z-index:1;
+  padding:120px 56px;
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:100px; align-items:center;
+  border-top:1px solid rgba(242,232,217,0.06);
+}
+
+.about-left {}
+.about-chapter {
+  font-family:'Space Mono',monospace;
+  font-size:10px; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--ember); margin-bottom:20px;
+  display:flex; align-items:center; gap:10px;
+}
+.about-chapter::before { content:''; width:28px; height:1px; background:var(--ember); display:block; }
+.about-heading {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(40px,5vw,68px);
+  font-weight:900; line-height:1;
+  letter-spacing:-0.02em; margin-bottom:32px;
+}
+.about-heading em { font-style:italic; color:var(--ember); }
+.about-body p {
+  font-size:15px; font-weight:300; color:var(--cream2);
+  line-height:1.9; margin-bottom:18px;
+}
+.about-body p strong { color:var(--cream); font-weight:500; }
+
+.about-right {}
+.manifesto {
+  position:relative;
+  padding:48px;
+  border:1px solid rgba(242,232,217,0.08);
+  background:var(--void2);
+}
+.manifesto::before {
+  content:'"';
+  font-family:'Playfair Display',serif;
+  font-size:160px; line-height:1;
+  color:var(--ember); opacity:0.08;
+  position:absolute; top:-20px; left:20px;
+  pointer-events:none;
+}
+.manifesto-lines { display:flex; flex-direction:column; gap:20px; }
+.manifesto-line {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(18px,2.2vw,26px);
+  font-weight:400; line-height:1.3; color:var(--cream);
+}
+.manifesto-line.italic { font-style:italic; color:var(--ember); }
+.manifesto-line.small {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:13px; font-weight:300;
+  color:var(--cream3); font-style:normal;
+  letter-spacing:0.02em; line-height:1.7;
+  border-top:1px solid rgba(242,232,217,0.06);
+  padding-top:20px; margin-top:4px;
+}
+
+/* ─── CONNECT ─── */
+#connect {
+  position:relative; z-index:1;
+  padding:100px 56px;
+  background:var(--void2);
+  border-top:1px solid rgba(242,232,217,0.06);
+}
+.connect-head { margin-bottom:56px; }
+.connect-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:rgba(242,232,217,0.06);
+}
+.connect-card {
+  background:var(--void2);
+  padding:36px 28px;
+  text-decoration:none;
+  display:block;
+  transition:background 0.25s;
+  border-bottom:2px solid transparent;
+}
+.connect-card:hover {
+  background:var(--void3);
+  border-bottom-color:var(--ember);
+}
+.connect-platform {
+  font-family:'Space Mono',monospace;
+  font-size:9px; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--cream3); margin-bottom:16px;
+}
+.connect-name {
+  font-family:'Playfair Display',serif;
+  font-size:26px; font-weight:700;
+  color:var(--cream); margin-bottom:10px;
+  letter-spacing:-0.01em;
+}
+.connect-desc {
+  font-size:13px; font-weight:300;
+  color:var(--cream3); line-height:1.7;
+}
+.connect-arrow {
+  margin-top:20px;
+  font-family:'Space Mono',monospace;
+  font-size:10px; letter-spacing:0.12em;
+  color:var(--ember); display:flex;
+  align-items:center; gap:8px;
+  transition:gap 0.2s;
+}
+.connect-card:hover .connect-arrow { gap:14px; }
+.connect-arrow::after { content:'→'; }
+
+/* ─── NEWSLETTER ─── */
+#newsletter {
+  position:relative; z-index:1;
+  padding:100px 56px;
+  border-top:1px solid rgba(242,232,217,0.06);
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:80px; align-items:center;
+}
+.nl-left {}
+.nl-title {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(36px,4vw,56px);
+  font-weight:900; line-height:1.05;
+  letter-spacing:-0.02em; margin-bottom:16px;
+}
+.nl-title em { font-style:italic; color:var(--ember); }
+.nl-sub {
+  font-size:14px; font-weight:300;
+  color:var(--cream3); line-height:1.8;
+}
+.nl-form { display:flex; flex-direction:column; gap:12px; }
+.nl-input {
+  background:var(--void2);
+  border:1px solid rgba(242,232,217,0.1);
+  color:var(--cream);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:14px; padding:16px 20px;
+  outline:none; transition:border-color 0.2s;
+  border-radius:2px;
+}
+.nl-input::placeholder { color:var(--cream3); }
+.nl-input:focus { border-color:var(--ember); }
+.nl-btn {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:14px; font-weight:600;
+  letter-spacing:0.04em;
+  background:var(--ember); color:var(--void);
+  border:none; padding:16px 28px;
+  cursor:none; transition:background 0.2s;
+  border-radius:2px; align-self:flex-start;
+}
+.nl-btn:hover { background:#f08c3a; }
+#nl-confirm {
+  display:none;
+  font-family:'Space Mono',monospace;
+  font-size:11px; color:var(--ember);
+  letter-spacing:0.08em;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  position:relative; z-index:1;
+  padding:40px 56px;
+  border-top:1px solid rgba(242,232,217,0.06);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.footer-logo {
+  font-family:'Playfair Display',serif;
+  font-size:18px; font-weight:900;
+  color:var(--cream); text-decoration:none;
+  letter-spacing:-0.01em;
+}
+.footer-logo em { color:var(--ember); font-style:italic; }
+.footer-worlds { display:flex; gap:28px; }
+.footer-worlds a {
+  font-family:'Space Mono',monospace;
+  font-size:10px; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--cream3);
+  text-decoration:none; transition:color 0.2s;
+}
+.footer-worlds a:hover { color:var(--ember); }
+.footer-copy {
+  font-family:'Space Mono',monospace;
+  font-size:10px; color:rgba(242,232,217,0.2);
+  letter-spacing:0.08em;
+}
+
+/* ─── SCROLL ANIMATIONS ─── */
+.reveal { opacity:0; transform:translateY(32px); transition:opacity 0.9s ease, transform 0.9s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-delay-1 { transition-delay:0.1s; }
+.reveal-delay-2 { transition-delay:0.2s; }
+.reveal-delay-3 { transition-delay:0.3s; }
+
+@media(max-width:960px){
+  nav { padding:20px; }
+  .hero { padding:0 20px; }
+  .worlds-intro { padding:60px 20px 32px; flex-direction:column; gap:20px; }
+  .worlds-tagline { text-align:left; }
+  .worlds-panels { grid-template-columns:1fr; height:auto; }
+  .world-panel { height:320px; border-right:none; border-bottom:1px solid rgba(242,232,217,0.06); }
+  .world-desc { opacity:1; transform:none; }
+  .world-cta { opacity:1; transform:none; }
+  #about { grid-template-columns:1fr; padding:80px 20px; gap:48px; }
+  #connect { padding:80px 20px; }
+  .connect-grid { grid-template-columns:1fr 1fr; }
+  #newsletter { grid-template-columns:1fr; padding:80px 20px; gap:40px; }
+  footer { padding:32px 20px; flex-direction:column; gap:20px; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-name">Derrick<span>.</span></div>
+  <div class="loader-bar-wrap"><div class="loader-bar" id="loader-bar"></div></div>
+  <div class="loader-tag">Loading the flow...</div>
+</div>
+
+<!-- CANVAS -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Derrick<em>.</em></a>
+  <div class="nav-right">
+    <a href="#worlds" class="nav-link">Worlds</a>
+    <a href="#about" class="nav-link">About</a>
+    <a href="#connect" class="nav-link">Connect</a>
+    <a href="derricks-own-flow.html" class="nav-link" style="color:var(--ember);">Flow</a>
+    <a href="dj-flow.html" class="nav-link" style="color:#D4FF00;">DJ</a>
+    <a href="dataflow.html" class="nav-link" style="color:#1A6BFF;">Data</a>
+  </div>
+</nav>
+<div style="position:sticky;top:60px;z-index:90;width:100%;background:rgba(10,8,6,0.88);border-bottom:0.5px solid rgba(242,232,217,0.08);display:flex;align-items:center;justify-content:center;gap:32px;padding:10px 40px;backdrop-filter:blur(12px);">
+  <a href="derrick-hub.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#F2E8D9;opacity:1;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='1'">
+        <span style="width:6px;height:6px;border-radius:50%;background:#F2E8D9;display:inline-block;opacity:1;"></span>Derrick.</a><a href="derricks-own-flow.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#EF7B2B;opacity:0.45;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.45'">
+        <span style="width:6px;height:6px;border-radius:50%;background:#EF7B2B;display:inline-block;opacity:0.35;"></span>Own Flow</a><a href="dj-flow.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#D4FF00;opacity:0.45;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.45'">
+        <span style="width:6px;height:6px;border-radius:50%;background:#D4FF00;display:inline-block;opacity:0.35;"></span>DJ Flow</a><a href="dataflow.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#1A6BFF;opacity:0.45;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.45'">
+        <span style="width:6px;height:6px;border-radius:50%;background:#1A6BFF;display:inline-block;opacity:0.35;"></span>DataFlow</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span class="blink-dot" style="width:6px;height:6px;background:var(--ember);border-radius:50%;display:inline-block;animation:blinkDot 1.2s ease-in-out infinite;"></span>
+    Atlanta, GA · Building in public · Est. 2025
+  </div>
+
+  <h1 class="hero-title">
+    <span class="name">Derrick.</span>
+    <span class="italic">Own your flow.</span>
+    <span class="outline">Build your world.</span>
+  </h1>
+
+  <div class="hero-sub">
+    <p class="hero-desc">
+      <strong>Wheelie creator. DJ. Data engineer.</strong> Three worlds, one person. This is the digital home of everything Derrick — a space for creative expression, real progression, and finding the people who are building their dream lives too.
+    </p>
+    <div class="hero-scroll">
+      <span>Explore</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- WORLDS -->
+<section id="worlds">
+  <div class="worlds-intro reveal">
+    <div>
+      <div class="worlds-label">The universes</div>
+      <h2 class="worlds-title">Three worlds.<br><em>One flow.</em></h2>
+    </div>
+    <p class="worlds-tagline">Every interest gets its own space. No limits on how deep it goes. This is just the beginning.</p>
+  </div>
+
+  <div class="worlds-panels">
+    <!-- PANEL 1 — DERRICK'S OWN FLOW -->
+    <div class="world-panel panel-flow">
+      <div class="world-bg">
+        <canvas class="panel-canvas" id="pc1" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.4;"></canvas>
+      </div>
+      <div class="world-overlay"></div>
+      <div class="world-content">
+        <div class="world-tag">Wheelies · Mindset · Lifestyle</div>
+        <div class="world-name">Derrick's<br>Own Flow</div>
+        <p class="world-desc">Raw progress. Real mindset. The unfiltered journey from passion to purpose — on two wheels and in life.</p>
+        <a href="derricks-own-flow.html" class="world-cta" style="color:var(--ember);">Enter the world</a>
+      </div>
+    </div>
+
+    <!-- PANEL 2 — DJ FLOW -->
+    <div class="world-panel panel-dj">
+      <div class="world-bg">
+        <canvas class="panel-canvas" id="pc2" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.5;"></canvas>
+      </div>
+      <div class="world-overlay"></div>
+      <div class="world-content">
+        <div class="world-tag">House · Soca · Latin · Techno</div>
+        <div class="world-name">DJ<br>Flow</div>
+        <p class="world-desc">Big energy sets that move rooms. From intimate club nights to festival stages — the decks don't stop.</p>
+        <a href="dj-flow.html" class="world-cta" style="color:var(--acid);">Hear the sound</a>
+      </div>
+    </div>
+
+    <!-- PANEL 3 — DATAFLOW -->
+    <div class="world-panel panel-data">
+      <div class="world-bg">
+        <canvas class="panel-canvas" id="pc3" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.4;"></canvas>
+      </div>
+      <div class="world-overlay"></div>
+      <div class="world-content">
+        <div class="world-tag">Data Engineering · Data Science · Art</div>
+        <div class="world-name">Data<em>Flow</em></div>
+        <p class="world-desc">Pipelines, models, and data as a creative medium. Where technical rigor meets artistic expression.</p>
+        <a href="dataflow.html" class="world-cta" style="color:var(--blue);">See the work</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-left reveal">
+    <div class="about-chapter">The person behind it all</div>
+    <h2 class="about-heading">One Derrick.<br><em>Many worlds.</em></h2>
+    <div class="about-body">
+      <p>I woke up one day and realised I was already living the life I used to pray for. That moment didn't make me stop wanting more — it made me <strong>move differently.</strong></p>
+      <p>I'm building three things at once: a content brand around riding and mindset, a DJ career built on energy and feeling, and a data career that goes way beyond a W2. Each one feeds the others.</p>
+      <p>This hub is my digital second home. A place for <strong>anyone who is also building their dream life</strong> to find me, connect with me, and maybe build something together.</p>
+      <p style="color:var(--cream3); font-style:italic; font-size:14px; margin-top:8px;">Based in Atlanta · Building everywhere.</p>
+    </div>
+  </div>
+  <div class="about-right reveal reveal-delay-2">
+    <div class="manifesto">
+      <div class="manifesto-lines">
+        <div class="manifesto-line">I ride because it makes me feel alive.</div>
+        <div class="manifesto-line italic">I DJ because music moves people.</div>
+        <div class="manifesto-line">I build data systems because problems deserve elegant solutions.</div>
+        <div class="manifesto-line italic">And I share all of it because someone out there needs to see it's possible.</div>
+        <div class="manifesto-line small">This is not a highlight reel. It's a construction site. You're watching something get built — in real time, with all the falls included.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONNECT -->
+<section id="connect">
+  <div class="connect-head reveal">
+    <div class="worlds-label">Find me everywhere</div>
+    <h2 class="worlds-title" style="font-size:clamp(36px,4vw,56px);">Connect with<br><em>the flow.</em></h2>
+  </div>
+  <div class="connect-grid reveal reveal-delay-1">
+    <a href="https://instagram.com/derricksownflow" target="_blank" class="connect-card">
+      <div class="connect-platform">Instagram</div>
+      <div class="connect-name">@derricksownflow</div>
+      <p class="connect-desc">Daily clips, mindset drops, and real-time progress from the journey.</p>
+      <div class="connect-arrow">Follow</div>
+    </a>
+    <a href="https://youtube.com/@derricksownflow" target="_blank" class="connect-card">
+      <div class="connect-platform">YouTube</div>
+      <div class="connect-name">Derrick's Own Flow</div>
+      <p class="connect-desc">The full story. Long-form sets, tutorials, and chapter-by-chapter progression.</p>
+      <div class="connect-arrow">Subscribe</div>
+    </a>
+    <a href="dj-flow.html" class="connect-card">
+      <div class="connect-platform">DJ Bookings</div>
+      <div class="connect-name">DJ Flow</div>
+      <p class="connect-desc">Available for club nights, private events, and brand activations. Let's make the room move.</p>
+      <div class="connect-arrow">Book now</div>
+    </a>
+    <a href="dataflow.html" class="connect-card">
+      <div class="connect-platform">Data & Tech</div>
+      <div class="connect-name">DataFlow</div>
+      <p class="connect-desc">Open to data engineering roles, freelance projects, and creative data collaborations.</p>
+      <div class="connect-arrow">Work together</div>
+    </a>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section id="newsletter">
+  <div class="nl-left reveal">
+    <div class="worlds-label" style="margin-bottom:16px;">Stay in the loop</div>
+    <h2 class="nl-title">The weekly<br><em>drop.</em></h2>
+    <p class="nl-sub">One email. What I built, what I learned, what moved me. The full unfiltered week — from someone building three worlds at once.</p>
+  </div>
+  <div class="reveal reveal-delay-1">
+    <div class="nl-form">
+      <input class="nl-input" type="text" placeholder="Your name" id="nl-name"/>
+      <input class="nl-input" type="email" placeholder="your@email.com" id="nl-email"/>
+      <button class="nl-btn" onclick="handleNL()">Join the journey →</button>
+      <p id="nl-confirm">// you're in. see you in the inbox.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="derrick-hub.html" class="footer-logo">Derrick<em>.</em></a>
+  <div class="footer-worlds">
+    <a href="derricks-own-flow.html">Derrick's Own Flow</a>
+    <a href="dj-flow.html">DJ Flow</a>
+    <a href="dataflow.html">DataFlow</a>
+  </div>
+  <span class="footer-copy">&copy; 2025 Derrick · All worlds reserved.</span>
+</footer>
+
+<script>
+// ── LOADER ──
+window.addEventListener('load', () => {
+  const bar = document.getElementById('loader-bar');
+  bar.style.width = '100%';
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('gone');
+  }, 2200);
+});
+
+// ── CURSOR ──
+const cur = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+function animRing(){
+  rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a,button,.world-panel').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.classList.add('hover');});
+  el.addEventListener('mouseleave',()=>{cur.classList.remove('hover');});
+});
+
+// ── BG CANVAS ──
+const bgc = document.getElementById('bg-canvas');
+const bgx = bgc.getContext('2d');
+function resizeBG(){ bgc.width=window.innerWidth; bgc.height=window.innerHeight; }
+resizeBG(); window.addEventListener('resize',resizeBG);
+const stars = Array.from({length:80},()=>({
+  x:Math.random()*window.innerWidth, y:Math.random()*window.innerHeight,
+  r:Math.random()*1.2+0.2, a:Math.random(), da:(Math.random()-0.5)*0.008,
+  vx:(Math.random()-0.5)*0.15, vy:(Math.random()-0.5)*0.15
+}));
+function drawBG(){
+  bgx.clearRect(0,0,bgc.width,bgc.height);
+  stars.forEach(s=>{
+    s.x+=s.vx; s.y+=s.vy; s.a+=s.da;
+    if(s.x<0)s.x=bgc.width; if(s.x>bgc.width)s.x=0;
+    if(s.y<0)s.y=bgc.height; if(s.y>bgc.height)s.y=0;
+    if(s.a<0.05||s.a>0.9) s.da*=-1;
+    bgx.beginPath(); bgx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    bgx.fillStyle=`rgba(242,232,217,${s.a})`;
+    bgx.fill();
+  });
+  requestAnimationFrame(drawBG);
+}
+drawBG();
+
+// ── PANEL CANVASES ──
+function makePanelCanvas(id, color, type) {
+  const c = document.getElementById(id);
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  const resize = () => { c.width=c.offsetWidth; c.height=c.offsetHeight; };
+  resize();
+  new ResizeObserver(resize).observe(c);
+
+  if(type === 'ember') {
+    // warm particle flow for Derrick's Own Flow
+    const pts = Array.from({length:50},()=>({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-0.5)*0.6,vy:(Math.random()-0.5)*0.6,r:Math.random()*2+0.5}));
+    const draw=()=>{
+      ctx.fillStyle='rgba(26,18,8,0.15)'; ctx.fillRect(0,0,c.width,c.height);
+      pts.forEach(p=>{
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0)p.x=c.width; if(p.x>c.width)p.x=0;
+        if(p.y<0)p.y=c.height; if(p.y>c.height)p.y=0;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=color; ctx.globalAlpha=0.6; ctx.fill(); ctx.globalAlpha=1;
+      });
+      requestAnimationFrame(draw);
+    }; draw();
+  }
+
+  if(type === 'wave') {
+    // waveform bars for DJ
+    const bars = Array.from({length:60},(_,i)=>({x:i*(c.width/60)+4,phase:Math.random()*Math.PI*2,speed:0.04+Math.random()*0.06}));
+    const draw=()=>{
+      ctx.clearRect(0,0,c.width,c.height);
+      bars.forEach(b=>{
+        b.phase+=b.speed;
+        const h=(Math.sin(b.phase)*0.5+0.5)*c.height*0.7+c.height*0.05;
+        ctx.fillStyle=color;
+        ctx.globalAlpha=0.5+Math.sin(b.phase)*0.3;
+        ctx.fillRect(b.x,c.height-h,Math.max(c.width/60-3,2),h);
+        ctx.globalAlpha=1;
+      });
+      requestAnimationFrame(draw);
+    }; draw();
+  }
+
+  if(type === 'network') {
+    // network graph for DataFlow
+    const nodes = Array.from({length:28},()=>({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-0.5)*0.4,vy:(Math.random()-0.5)*0.4,r:Math.random()*2+1}));
+    const draw=()=>{
+      ctx.clearRect(0,0,c.width,c.height);
+      nodes.forEach((n,i)=>{
+        n.x+=n.vx; n.y+=n.vy;
+        if(n.x<0||n.x>c.width)n.vx*=-1;
+        if(n.y<0||n.y>c.height)n.vy*=-1;
+        for(let j=i+1;j<nodes.length;j++){
+          const n2=nodes[j];
+          const dx=n.x-n2.x,dy=n.y-n2.y,dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<90){
+            ctx.beginPath(); ctx.moveTo(n.x,n.y); ctx.lineTo(n2.x,n2.y);
+            ctx.strokeStyle=color; ctx.globalAlpha=(1-dist/90)*0.3;
+            ctx.lineWidth=0.8; ctx.stroke(); ctx.globalAlpha=1;
+          }
+        }
+        ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+        ctx.fillStyle=color; ctx.globalAlpha=0.7; ctx.fill(); ctx.globalAlpha=1;
+      });
+      requestAnimationFrame(draw);
+    }; draw();
+  }
+}
+
+setTimeout(()=>{
+  makePanelCanvas('pc1','#EF7B2B','ember');
+  makePanelCanvas('pc2','#D4FF00','wave');
+  makePanelCanvas('pc3','#1A6BFF','network');
+},300);
+
+// ── SCROLL REVEAL ──
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// ── NEWSLETTER ──
+function handleNL(){
+  const n=document.getElementById('nl-name').value;
+  const e=document.getElementById('nl-email').value;
+  if(n&&e&&e.includes('@')){
+    document.getElementById('nl-name').value='';
+    document.getElementById('nl-email').value='';
+    document.getElementById('nl-confirm').style.display='block';
+  }
+}
+document.getElementById('nl-email').addEventListener('keydown',e=>{ if(e.key==='Enter') handleNL(); });
+
+// ── BLINK ──
+const style=document.createElement('style');
+style.textContent='@keyframes blinkDot{0%,100%{opacity:1;}50%{opacity:0.2;}}';
+document.head.appendChild(style);
+</script>
+</body>
+</html>
