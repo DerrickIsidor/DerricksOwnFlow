@@ -64,21 +64,39 @@
     var bg        = opts.background || preset.background;
     var border    = opts.border     || preset.border;
 
+    // Inject responsive styles for the world nav (once per page)
+    if (!document.getElementById('world-nav-styles')) {
+      var styleEl = document.createElement('style');
+      styleEl.id = 'world-nav-styles';
+      styleEl.textContent = [
+        '#world-nav { -webkit-overflow-scrolling:touch; scrollbar-width:none; }',
+        '#world-nav::-webkit-scrollbar { display:none; }',
+        '@media (max-width:640px) {',
+        '  #world-nav { gap:16px !important; padding:0 16px !important; justify-content:flex-start !important; }',
+        '}',
+      ].join('\n');
+      document.head.appendChild(styleEl);
+    }
+
     var bar = document.createElement('div');
     bar.id  = 'world-nav';
     bar.setAttribute('style', [
-      'position:sticky',
-      'top:60px',
-      'z-index:90',
+      'position:fixed',
+      'top:0',
+      'left:0',
+      'right:0',
+      'z-index:200',
       'width:100%',
       'background:' + bg,
       'border-bottom:0.5px solid ' + border,
       'display:flex',
       'align-items:center',
       'justify-content:center',
-      'gap:32px',
-      'padding:10px 40px',
+      'gap:24px',
+      'padding:0 40px',
+      'height:40px',
       'backdrop-filter:blur(12px)',
+      'overflow-x:auto',
     ].join(';') + ';');
 
     WORLDS.forEach(function (w) {
@@ -122,7 +140,7 @@
 
     var mainNav = document.querySelector('nav');
     if (mainNav) {
-      mainNav.insertAdjacentElement('afterend', bar);
+      mainNav.insertAdjacentElement('beforebegin', bar);
     } else {
       document.body.insertBefore(bar, document.body.firstChild);
     }

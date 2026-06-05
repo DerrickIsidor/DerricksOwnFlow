@@ -68,10 +68,10 @@ body {
 
 /* ─── NAV ─── */
 nav {
-  position:fixed; top:0; left:0; right:0; z-index:50;
+  position:fixed; top:40px; left:0; right:0; z-index:150;
   display:flex; align-items:center; justify-content:space-between;
-  padding:28px 56px;
-  background:linear-gradient(to bottom, rgba(10,8,6,0.7) 0%, transparent 100%);
+  padding:16px 48px;
+  background:linear-gradient(to bottom, rgba(10,8,6,0.85) 0%, rgba(10,8,6,0.4) 70%, transparent 100%);
 }
 .nav-logo {
   font-family:'Playfair Display',serif;
@@ -80,7 +80,7 @@ nav {
   letter-spacing:-0.01em;
 }
 .nav-logo em { color:var(--ember); font-style:italic; }
-.nav-right { display:flex; align-items:center; gap:32px; }
+.nav-right { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
 .nav-link {
   font-family:'Space Mono',monospace;
   font-size:10px; letter-spacing:0.15em;
@@ -93,7 +93,7 @@ nav {
 .hero {
   min-height:100vh;
   display:flex; flex-direction:column; justify-content:center;
-  padding:0 56px;
+  padding:100px 56px 0;
   position:relative; z-index:1;
   overflow:hidden;
 }
@@ -463,8 +463,9 @@ footer {
 .reveal-delay-3 { transition-delay:0.3s; }
 
 @media(max-width:960px){
-  nav { padding:20px; }
-  .hero { padding:0 20px; }
+  nav { padding:12px 20px; }
+  .nav-right { display:none; }
+  .hero { padding:100px 20px 0; }
   .worlds-intro { padding:60px 20px 32px; flex-direction:column; gap:20px; }
   .worlds-tagline { text-align:left; }
   .worlds-panels { grid-template-columns:1fr; height:auto; }
