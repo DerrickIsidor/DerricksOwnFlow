@@ -103,7 +103,7 @@
       var isActive = (w.id === activeId);
 
       var a = document.createElement('a');
-      a.href = w.href;
+      a.href = (opts.basePath || '') + w.href;
       a.setAttribute('style', [
         'display:flex',
         'align-items:center',

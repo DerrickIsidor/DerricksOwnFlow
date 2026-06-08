@@ -455,6 +455,62 @@ footer {
   letter-spacing:0.08em;
 }
 
+/* ─── TOOLS PREVIEW ─── */
+#tools-preview {
+  position: relative; z-index: 1;
+  padding: 80px 56px;
+  border-top: 1px solid rgba(242,232,217,0.06);
+}
+.tool-preview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: rgba(242,232,217,0.06);
+  margin-top: 48px;
+}
+.tool-preview-card {
+  background: var(--void2);
+  padding: 40px 36px;
+  text-decoration: none;
+  display: block;
+  transition: background 0.25s;
+  border-bottom: 2px solid transparent;
+}
+.tool-preview-card:hover {
+  background: var(--void3);
+  border-bottom-color: var(--ember);
+}
+.tool-preview-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ember); margin-bottom: 16px;
+}
+.tool-preview-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; font-weight: 700;
+  color: var(--cream); margin-bottom: 12px;
+  letter-spacing: -0.01em; line-height: 1.1;
+}
+.tool-preview-desc {
+  font-size: 13px; font-weight: 300;
+  color: var(--cream3); line-height: 1.7; margin-bottom: 20px;
+}
+.tool-preview-cta {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; letter-spacing: 0.15em;
+  color: var(--ember);
+  display: flex; align-items: center; gap: 8px;
+  transition: gap 0.2s;
+}
+.tool-preview-card:hover .tool-preview-cta { gap: 14px; }
+.tool-preview-coming {
+  background: var(--void2);
+  padding: 40px 36px;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: flex-start; gap: 10px;
+  opacity: 0.28;
+}
+
 /* ─── SCROLL ANIMATIONS ─── */
 .reveal { opacity:0; transform:translateY(32px); transition:opacity 0.9s ease, transform 0.9s ease; }
 .reveal.visible { opacity:1; transform:translateY(0); }
@@ -472,6 +528,8 @@ footer {
   .world-panel { height:320px; border-right:none; border-bottom:1px solid rgba(242,232,217,0.06); }
   .world-desc { opacity:1; transform:none; }
   .world-cta { opacity:1; transform:none; }
+  #tools-preview { padding:80px 20px; }
+  .tool-preview-grid { grid-template-columns:1fr; }
   #about { grid-template-columns:1fr; padding:80px 20px; gap:48px; }
   #connect { padding:80px 20px; }
   .connect-grid { grid-template-columns:1fr 1fr; }
@@ -584,6 +642,29 @@ footer {
         <p class="world-desc">Pipelines, models, and data as a creative medium. Where technical rigor meets artistic expression.</p>
         <a href="dataflow.html" class="world-cta" style="color:var(--blue);">See the work</a>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS PREVIEW -->
+<section id="tools-preview">
+  <div class="worlds-intro reveal">
+    <div>
+      <div class="worlds-label">From the lab</div>
+      <h2 class="worlds-title">Tools I<br><em>Build.</em></h2>
+    </div>
+    <p class="worlds-tagline">DOF is becoming a product studio. Free tools built on real math — no paywalls, no sign-ups. Just useful.</p>
+  </div>
+  <div class="tool-preview-grid reveal reveal-delay-1">
+    <a href="tools/fire-calculator.html" class="tool-preview-card">
+      <div class="tool-preview-tag">Finance · Free Tool</div>
+      <div class="tool-preview-name">FIRE Calculator</div>
+      <p class="tool-preview-desc">Your number. Your timeline. Calculate exactly when you can leave the 9-to-5 — adjustable withdrawal rate, expected returns, and inflation. No fluff, just the math.</p>
+      <div class="tool-preview-cta">Try it free</div>
+    </a>
+    <div class="tool-preview-coming">
+      <div style="font-family:'Playfair Display',serif;font-size:28px;font-style:italic;color:var(--cream);">More coming.</div>
+      <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--cream3);">Building in public</div>
     </div>
   </div>
 </section>
