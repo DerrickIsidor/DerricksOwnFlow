@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIRE Calculator — Derrick's Own Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --midnight: #1A1208;
+    --ember: #EF7B2B;
+    --rust: #C4622D;
+    --earth: #8C5E3C;
+    --cream: #F2E8D9;
+    --void: #0F0B05;
+    --surface: #231A0E;
+    --surface2: #2E2010;
+    --muted: #6B5240;
+    --text: #D4C4B0;
+    --green: #4CAF7D;
+    --green-dim: #2A5C40;
+    --blue: #378ADD;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 60px 24px 40px;
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .brand-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-tag::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--ember);
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 12vw, 110px);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--cream);
+    margin-bottom: 20px;
+  }
+
+  h1 span {
+    color: var(--ember);
+    display: block;
+  }
+
+  .hero-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+
+  /* Divider */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, var(--ember), transparent);
+    max-width: 860px;
+    margin: 0 auto 40px;
+  }
+
+  /* Main layout */
+  .main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 640px) {
+    .main { grid-template-columns: 1fr; }
+    h1 { font-size: 72px; }
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid #3A2A18;
+    border-radius: 4px;
+    padding: 28px;
+  }
+
+  .card-full { grid-column: 1 / -1; }
+
+  .card-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 20px;
+  }
+
+  /* Input groups */
+  .input-group {
+    margin-bottom: 22px;
+  }
+
+  .input-group:last-child { margin-bottom: 0; }
+
+  .input-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cream);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .input-hint {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--muted);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+
+  .input-prefix {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    color: var(--ember);
+    font-weight: 600;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    background: var(--void);
+    border: 1px solid #3A2A18;
+    border-radius: 3px;
+    color: var(--cream);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 12px 14px 12px 32px;
+    outline: none;
+    transition: border-color 0.2s;
+    -moz-appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  input[type="number"]:focus {
+    border-color: var(--ember);
+  }
+
+  /* Slider */
+  .slider-wrap {
+    position: relative;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 2px;
+    outline: none;
+    margin-top: 10px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--ember);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid var(--void);
+    box-shadow: 0 0 0 1px var(--ember);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--ember);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid var(--void);
+  }
+
+  .range-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* Results card */
+  .results-card {
+    background: var(--surface);
+    border: 1px solid var(--ember);
+    border-radius: 4px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .results-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--ember), var(--rust), transparent);
+  }
+
+  .fire-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 80px);
+    line-height: 1;
+    color: var(--ember);
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+  }
+
+  .fire-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat {
+    background: var(--void);
+    border: 1px solid #3A2A18;
+    border-radius: 3px;
+    padding: 16px;
+  }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--cream);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-val.green { color: var(--green); }
+  .stat-val.blue { color: var(--blue); }
+
+  .stat-key {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Progress bar */
+  .progress-section { margin-bottom: 24px; }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 6px;
+    background: var(--void);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--rust), var(--ember));
+    border-radius: 3px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 4px;
+  }
+
+  /* Timeline chart */
+  .chart-section {
+    margin-top: 4px;
+  }
+
+  .chart-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 80px;
+  }
+
+  .bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .bar {
+    width: 100%;
+    border-radius: 2px 2px 0 0;
+    transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 2px;
+    position: relative;
+  }
+
+  .bar.fire-bar { background: var(--ember); }
+  .bar.progress-bar-item { background: var(--green); }
+
+  .bar-yr {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* FIRE levels */
+  .levels {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .level-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--void);
+    border: 1px solid #3A2A18;
+    border-radius: 3px;
+    transition: border-color 0.2s;
+  }
+
+  .level-row.active {
+    border-color: var(--ember);
+    background: #1F1309;
+  }
+
+  .level-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .level-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cream);
+    flex: 1;
+  }
+
+  .level-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--text);
+  }
+
+  .level-row.active .level-amount { color: var(--ember); }
+
+  .level-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ember);
+    background: #2E1A08;
+    border: 1px solid var(--ember);
+    border-radius: 2px;
+    padding: 2px 6px;
+  }
+
+  /* Insight box */
+  .insight {
+    background: #1A1208;
+    border-left: 3px solid var(--ember);
+    padding: 16px 20px;
+    border-radius: 0 3px 3px 0;
+    margin-top: 20px;
+  }
+
+  .insight-text {
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .insight-text strong {
+    color: var(--cream);
+    font-weight: 500;
+  }
+
+  /* Footer */
+  .footer {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-top: 1px solid #2A1A08;
+    padding-top: 28px;
+  }
+
+  .footer-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--ember);
+    letter-spacing: 0.06em;
+    flex: 1;
+  }
+
+  .footer-note {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* Top nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    height: 60px;
+    background: rgba(15, 11, 5, 0.92);
+    border-bottom: 1px solid rgba(239, 123, 43, 0.1);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+  }
+  .nav-back {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(242, 232, 217, 0.35);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--ember); }
+  .nav-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(239, 123, 43, 0.4);
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero { animation: fadeUp 0.5s ease forwards; }
+  .main > * { animation: fadeUp 0.5s ease forwards; }
+  .main > *:nth-child(1) { animation-delay: 0.1s; opacity: 0; }
+  .main > *:nth-child(2) { animation-delay: 0.2s; opacity: 0; }
+  .main > *:nth-child(3) { animation-delay: 0.15s; opacity: 0; }
+  .main > *:nth-child(4) { animation-delay: 0.25s; opacity: 0; }
+  .main > *:nth-child(5) { animation-delay: 0.3s; opacity: 0; }
+
+  .num-transition {
+    transition: opacity 0.2s;
+  }
+  .num-updating { opacity: 0.4; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-back">← Derrick</a>
+  <span class="nav-tag">Free Tools</span>
+</nav>
+
+<div class="hero">
+  <div class="brand-tag">Derrick's Own Flow · DataFlow Tools</div>
+  <h1>FIRE<span>CALCULATOR</span></h1>
+  <p class="hero-sub">Your number. Your timeline. No fluff — just the math that tells you when you're free.</p>
+</div>
+
+<div class="divider"></div>
+
+<div class="main">
+
+  <!-- Left col: inputs -->
+  <div class="card">
+    <div class="card-label">Your Situation</div>
+
+    <div class="input-group">
+      <div class="input-label">
+        Annual Expenses
+        <span class="input-hint">what you actually spend</span>
+      </div>
+      <div class="input-wrap">
+        <span class="input-prefix">$</span>
+        <input type="number" id="expenses" value="40000" min="1000" step="1000">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label">
+        Current Savings / Investments
+        <span class="input-hint">total portfolio today</span>
+      </div>
+      <div class="input-wrap">
+        <span class="input-prefix">$</span>
+        <input type="number" id="savings" value="25000" min="0" step="1000">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label">
+        Annual Savings Rate
+        <span class="input-hint" id="savings-dollar-hint">saving / yr</span>
+      </div>
+      <div class="input-wrap">
+        <span class="input-prefix">$</span>
+        <input type="number" id="annual-savings" value="15000" min="0" step="500">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right col: assumptions -->
+  <div class="card">
+    <div class="card-label">Assumptions</div>
+
+    <div class="input-group">
+      <div class="input-label">
+        Withdrawal Rate
+        <span class="input-hint" id="wr-hint">4.0%</span>
+      </div>
+      <input type="range" id="withdrawal" min="2" max="6" step="0.5" value="4">
+      <div class="range-labels"><span>2% (safe)</span><span>4% (standard)</span><span>6% (aggressive)</span></div>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label">
+        Expected Return
+        <span class="input-hint" id="return-hint">7.0%</span>
+      </div>
+      <input type="range" id="return-rate" min="4" max="12" step="0.5" value="7">
+      <div class="range-labels"><span>4% (conservative)</span><span>10%+</span></div>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label">
+        Inflation
+        <span class="input-hint" id="inflation-hint">3.0%</span>
+      </div>
+      <input type="range" id="inflation" min="1" max="5" step="0.5" value="3">
+      <div class="range-labels"><span>1%</span><span>3%</span><span>5%</span></div>
+    </div>
+
+  </div>
+
+  <!-- Results - full width -->
+  <div class="card results-card card-full">
+    <div class="card-label">Your FIRE Number</div>
+
+    <div class="fire-number num-transition" id="fire-number">$1,000,000</div>
+    <div class="fire-label">target portfolio value</div>
+
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-val num-transition green" id="years-to-fire">—</div>
+        <div class="stat-key">Years to FIRE</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val num-transition blue" id="fire-date">—</div>
+        <div class="stat-key">Est. FIRE Year</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val num-transition" id="current-progress">—%</div>
+        <div class="stat-key">Current Progress</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val num-transition" id="monthly-passive">—</div>
+        <div class="stat-key">Monthly Passive (at FIRE)</div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-header">
+        <span>Portfolio Progress</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="chart-section">
+      <div class="chart-title">Portfolio Growth Trajectory</div>
+      <div class="chart-bars" id="chart-bars"></div>
+    </div>
+
+    <div class="insight" id="insight-box">
+      <div class="insight-text" id="insight-text">Enter your numbers above.</div>
+    </div>
+  </div>
+
+  <!-- FIRE levels -->
+  <div class="card card-full">
+    <div class="card-label">FIRE Levels — Where Do You Stand?</div>
+    <div class="levels" id="levels-list"></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-brand">Derrick's Own Flow</div>
+  <div class="footer-note">Based on the 4% rule (Bengen, 1994). Not financial advice — your flow, your math.</div>
+</div>
+
+<script>
+  const fmt = (n) => '$' + Math.round(n).toLocaleString();
+  const fmtK = (n) => {
+    if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000) return '$' + Math.round(n / 1000) + 'K';
+    return fmt(n);
+  };
+
+  function calc() {
+    const expenses = parseFloat(document.getElementById('expenses').value) || 0;
+    const savings = parseFloat(document.getElementById('savings').value) || 0;
+    const annualSave = parseFloat(document.getElementById('annual-savings').value) || 0;
+    const wr = parseFloat(document.getElementById('withdrawal').value) / 100;
+    const returnRate = parseFloat(document.getElementById('return-rate').value) / 100;
+    const inflation = parseFloat(document.getElementById('inflation').value) / 100;
+
+    const realReturn = (1 + returnRate) / (1 + inflation) - 1;
+    const fireNumber = expenses / wr;
+
+    // Years to FIRE via simulation
+    let portfolio = savings;
+    let years = 0;
+    const maxYears = 80;
+    const yearData = [];
+
+    while (portfolio < fireNumber && years < maxYears) {
+      yearData.push({ yr: years, val: portfolio });
+      portfolio = portfolio * (1 + realReturn) + annualSave;
+      years++;
+    }
+    yearData.push({ yr: years, val: Math.min(portfolio, fireNumber * 2) });
+
+    const progress = Math.min((savings / fireNumber) * 100, 100);
+    const fireYear = new Date().getFullYear() + years;
+    const monthlyPassive = (fireNumber * wr) / 12;
+
+    // Update DOM
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      el.classList.add('num-updating');
+      setTimeout(() => {
+        el.textContent = val;
+        el.classList.remove('num-updating');
+      }, 150);
+    };
+
+    setVal('fire-number', fmt(fireNumber));
+    setVal('years-to-fire', years >= maxYears ? '80+' : years + ' yrs');
+    setVal('fire-date', years >= maxYears ? 'Long road' : fireYear.toString());
+    setVal('current-progress', progress.toFixed(1) + '%');
+    setVal('monthly-passive', fmtK(monthlyPassive) + '/mo');
+
+    document.getElementById('progress-fill').style.width = progress + '%';
+    document.getElementById('progress-pct').textContent = progress.toFixed(1) + '%';
+
+    // Chart
+    const bars = document.getElementById('chart-bars');
+    bars.innerHTML = '';
+    const step = Math.max(1, Math.ceil(yearData.length / 14));
+    const subset = yearData.filter((_, i) => i % step === 0 || i === yearData.length - 1);
+    const maxVal = Math.max(...subset.map(d => d.val), fireNumber);
+
+    subset.forEach(d => {
+      const wrap = document.createElement('div');
+      wrap.className = 'bar-wrap';
+      const pct = (d.val / maxVal) * 100;
+      const isFire = d.val >= fireNumber;
+      wrap.innerHTML = `
+        <div class="bar ${isFire ? 'fire-bar' : 'progress-bar-item'}" style="height:${Math.max(pct, 2)}%"></div>
+        <span class="bar-yr">Yr ${d.yr}</span>
+      `;
+      bars.appendChild(wrap);
+    });
+
+    // Insight
+    const savingsRate = expenses > 0 ? (annualSave / (expenses + annualSave)) * 100 : 0;
+    let insightMsg = '';
+    if (years <= 10) {
+      insightMsg = `<strong>Aggressive timeline.</strong> You're ${years} years from freedom. Keep your savings rate above ${savingsRate.toFixed(0)}% and don't inflate your lifestyle — that's the whole game.`;
+    } else if (years <= 20) {
+      insightMsg = `<strong>Solid trajectory.</strong> ${years} years is the average for someone serious about FIRE. Every extra $${(annualSave * 0.1 / 1000).toFixed(0)}K/year you add shaves off roughly ${Math.round(years * 0.05)} months.`;
+    } else if (years <= 35) {
+      insightMsg = `<strong>Standard path, room to accelerate.</strong> At ${years} years, your biggest lever is income growth — a side stream of $1K/month could cut this by ${Math.round(years * 0.12)} years. That's what DataFlow is for.`;
+    } else {
+      insightMsg = `<strong>The math needs work.</strong> Either expenses are too high, savings too low, or both. Close the gap — even small changes compound hard. What's one expense you could cut, and one stream you could add?`;
+    }
+    document.getElementById('insight-text').innerHTML = insightMsg;
+
+    // FIRE levels
+    const levelDefs = [
+      { name: 'Coast FIRE', mult: 0.25, color: '#378ADD', desc: 'Stop saving — just let it grow' },
+      { name: 'Lean FIRE', mult: 0.625, color: '#4CAF7D', desc: 'Minimal lifestyle, full freedom' },
+      { name: 'FIRE', mult: 1.0, color: '#EF7B2B', desc: 'Your number — the standard' },
+      { name: 'Fat FIRE', mult: 1.5, color: '#C4622D', desc: 'Comfortable + some cushion' },
+      { name: 'Chubby FIRE', mult: 2.0, color: '#8C5E3C', desc: 'Wealthy by any measure' },
+    ];
+
+    const levelEl = document.getElementById('levels-list');
+    levelEl.innerHTML = '';
+    levelDefs.forEach(l => {
+      const amt = fireNumber * l.mult;
+      const isActive = savings >= amt * 0.5 && savings < amt * 1.5 || (l.mult === 1.0);
+      const isReached = savings >= amt;
+      const row = document.createElement('div');
+      row.className = 'level-row' + (l.mult === 1.0 ? ' active' : '');
+      row.innerHTML = `
+        <div class="level-dot" style="background:${l.color}"></div>
+        <div>
+          <div class="level-name">${l.name}</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:0.04em;">${l.desc}</div>
+        </div>
+        <div class="level-amount">${fmtK(amt)}</div>
+        ${isReached ? '<div class="level-badge">Reached</div>' : ''}
+      `;
+      levelEl.appendChild(row);
+    });
+  }
+
+  // Slider live hints
+  document.getElementById('withdrawal').addEventListener('input', e => {
+    document.getElementById('wr-hint').textContent = parseFloat(e.target.value).toFixed(1) + '%';
+    calc();
+  });
+  document.getElementById('return-rate').addEventListener('input', e => {
+    document.getElementById('return-hint').textContent = parseFloat(e.target.value).toFixed(1) + '%';
+    calc();
+  });
+  document.getElementById('inflation').addEventListener('input', e => {
+    document.getElementById('inflation-hint').textContent = parseFloat(e.target.value).toFixed(1) + '%';
+    calc();
+  });
+
+  ['expenses','savings','annual-savings'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calc);
+  });
+
+  calc();
+</script>
+<script src="../assets/shared.js"></script>
+<script>
+  initSharedNav('data', { theme: 'dark_warm', basePath: '../' });
+</script>
+</body>
+</html>
