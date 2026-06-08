@@ -516,40 +516,6 @@
     letter-spacing: 0.04em;
   }
 
-  /* Top nav */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 200;
-    height: 60px;
-    background: rgba(15, 11, 5, 0.92);
-    border-bottom: 1px solid rgba(239, 123, 43, 0.1);
-    backdrop-filter: blur(12px);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-  }
-  .nav-back {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(242, 232, 217, 0.35);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .nav-back:hover { color: var(--ember); }
-  .nav-tag {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(239, 123, 43, 0.4);
-  }
-
   /* Animations */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
@@ -571,11 +537,6 @@
 </style>
 </head>
 <body>
-
-<nav>
-  <a href="../index.html" class="nav-back">← Derrick</a>
-  <span class="nav-tag">Free Tools</span>
-</nav>
 
 <div class="hero">
   <div class="brand-tag">Derrick's Own Flow · DataFlow Tools</div>
@@ -858,6 +819,7 @@
 </script>
 <script src="../assets/shared.js"></script>
 <script>
+  initToolNav('Free Tools', { basePath: '../' });
   initSharedNav('data', { theme: 'dark_warm', basePath: '../' });
 </script>
 </body>

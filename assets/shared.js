@@ -148,4 +148,62 @@
 
   window.initSharedNav = initSharedNav;
 
+  /**
+   * Inject a fixed top nav bar for tool/sub-pages.
+   *
+   * Call this BEFORE initSharedNav so the world-switcher sits right below it.
+   *
+   * @param {string} sectionLabel  — Right-side label, e.g. 'Free Tools'
+   * @param {object} opts
+   *   opts.basePath  — Path prefix for the home link, e.g. '../' for tools/ sub-folder
+   *   opts.backLabel — Override the back link text (default: '← Derrick')
+   *   opts.backHref  — Override the back link href (default: basePath + 'index.html')
+   */
+  function initToolNav(sectionLabel, opts) {
+    opts = opts || {};
+    var base     = opts.basePath  || '';
+    var backText = opts.backLabel || '← Derrick';
+    var backHref = opts.backHref  || (base + 'index.html');
+
+    var nav = document.createElement('nav');
+    nav.id  = 'tool-nav';
+    nav.setAttribute('style', [
+      'position:fixed', 'top:0', 'left:0', 'right:0',
+      'z-index:200', 'height:60px',
+      'background:rgba(15,11,5,0.92)',
+      'border-bottom:1px solid rgba(239,123,43,0.1)',
+      'backdrop-filter:blur(12px)',
+      'display:flex', 'align-items:center',
+      'justify-content:space-between', 'padding:0 24px',
+    ].join(';') + ';');
+
+    var back = document.createElement('a');
+    back.href = backHref;
+    back.textContent = backText;
+    back.setAttribute('style', [
+      'font-family:system-ui,-apple-system,sans-serif',
+      'font-size:11px', 'font-weight:600',
+      'letter-spacing:0.14em', 'text-transform:uppercase',
+      'color:rgba(242,232,217,0.35)', 'text-decoration:none',
+      'transition:color 0.2s',
+    ].join(';') + ';');
+    back.addEventListener('mouseover', function () { this.style.color = '#EF7B2B'; });
+    back.addEventListener('mouseout',  function () { this.style.color = 'rgba(242,232,217,0.35)'; });
+
+    var label = document.createElement('span');
+    label.textContent = sectionLabel || '';
+    label.setAttribute('style', [
+      'font-family:system-ui,-apple-system,sans-serif',
+      'font-size:10px', 'font-weight:600',
+      'letter-spacing:0.2em', 'text-transform:uppercase',
+      'color:rgba(239,123,43,0.4)',
+    ].join(';') + ';');
+
+    nav.appendChild(back);
+    nav.appendChild(label);
+    document.body.insertBefore(nav, document.body.firstChild);
+  }
+
+  window.initToolNav = initToolNav;
+
 })();

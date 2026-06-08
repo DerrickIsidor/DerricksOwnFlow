@@ -14,11 +14,39 @@ DerricksOwnFlow/
 ├── derricks-own-flow.html   ← Wheelie & lifestyle world (ember/orange)
 ├── dj-flow.html             ← DJ world (acid green)
 ├── dataflow.html            ← Data & tech world (blue / light theme)
+├── tools/
+│   └── fire-calculator.html ← First free tool (FIRE Calculator)
 ├── assets/
-│   └── shared.js            ← Cross-page nav bar — ONE file controls all 4 pages
+│   └── shared.js            ← Cross-page nav bar — ONE file controls all pages
+│                               Exports: initSharedNav(), initToolNav()
 ├── CNAME                    ← Domain: derricksownflow.com
 └── CLAUDE.md                ← This file
 ```
+
+---
+
+## Tool Page Standard — REQUIRED on Every New Tool/Sub-Page
+
+Every file inside `tools/` (or any new standalone page outside the root) **must** include both nav functions from `shared.js`. This is non-negotiable — it keeps all pages connected to the brand system.
+
+### Boilerplate (copy for every new tool)
+
+**End of `<body>`, before `</body>`:**
+```html
+<script src="../assets/shared.js"></script>
+<script>
+  initToolNav('Tool Section Label', { basePath: '../' });
+  initSharedNav('data', { theme: 'dark_warm', basePath: '../' });
+</script>
+```
+
+**What each call does:**
+- `initToolNav(label, opts)` — injects the fixed dark top nav bar with `← Derrick` on the left and your label on the right. Always call this **before** `initSharedNav`.
+- `initSharedNav(activeId, opts)` — injects the sticky world-switcher bar below the top nav. Use `'data'` for DataFlow tools; adjust if the tool belongs to a different world.
+
+**`basePath` rule:** always `'../'` for files one level deep (`tools/`), `'../../'` for two levels deep, etc.
+
+**Do NOT add a `<nav>` element** in the HTML — `initToolNav` creates and injects it automatically.
 
 ---
 
