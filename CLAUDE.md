@@ -41,8 +41,16 @@ Every file inside `tools/` (or any new standalone page outside the root) **must*
 ```
 
 **What each call does:**
-- `initToolNav(label, opts)` — injects the fixed dark top nav bar with `← Derrick` on the left and your label on the right. Always call this **before** `initSharedNav`.
-- `initSharedNav(activeId, opts)` — injects the sticky world-switcher bar below the top nav. Use `'data'` for DataFlow tools; adjust if the tool belongs to a different world.
+- `initToolNav(label, opts)` — injects a fixed dark nav bar at `top:40px` (below the world-nav) with `← Derrick` on the left and your label on the right. Always call this **before** `initSharedNav`.
+- `initSharedNav(activeId, opts)` — injects the world-switcher bar at `top:0` (40px tall), which always floats above everything else.
+
+**Nav stack on tool pages (top → bottom):**
+```
+top:0  → height:40px  → world-switcher bar (z-index:200)
+top:40 → height:60px  → tool nav: ← Derrick / Label (z-index:150)
+top:100 → page content starts
+```
+So the hero / first content area of any tool page needs **at least 100px top padding**.
 
 **`basePath` rule:** always `'../'` for files one level deep (`tools/`), `'../../'` for two levels deep, etc.
 

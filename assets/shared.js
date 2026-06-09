@@ -168,8 +168,8 @@
     var nav = document.createElement('nav');
     nav.id  = 'tool-nav';
     nav.setAttribute('style', [
-      'position:fixed', 'top:0', 'left:0', 'right:0',
-      'z-index:200', 'height:60px',
+      'position:fixed', 'top:40px', 'left:0', 'right:0',
+      'z-index:150', 'height:60px',
       'background:rgba(15,11,5,0.92)',
       'border-bottom:1px solid rgba(239,123,43,0.1)',
       'backdrop-filter:blur(12px)',
