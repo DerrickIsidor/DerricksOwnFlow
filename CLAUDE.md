@@ -294,4 +294,28 @@ Changes go live at derricksownflow.com within ~60 seconds.
 3. Call `initSharedNav('myworld')` in the new page's script
 4. Add the new page to the footer links on all other pages
 
+---
+
+## Lab & Agent Tooling
+
+Beyond the public site, this repo is also Derrick's workspace for building, shipping,
+and sharing AI/data projects:
+
+- **`lab/`** — new projects live here, each in its own subfolder. Not deployed by
+  GitHub Pages; see `lab/README.md`.
+- **`.claude/skills/`** — Claude Code skills installed for this kind of work
+  (skill-creator, mcp-builder, agentic-eval, prompt-engineer, openai-docs). See
+  `.claude/skills/README.md` for what each does and where it came from.
+- **`.mcp.json`** — registers the `openaiDeveloperDocs` MCP server the `openai-docs`
+  skill depends on.
+- **`bungi`** (`.claude/agents/bungi.md`) — a subagent that documents changes, tracks
+  open gaps between the docs and the actual repo, and researches knowledge gaps using
+  the skills above. Invoke it after finishing meaningful work ("have Bungi document
+  this") or to audit the project ("ask Bungi what's out of date" / "find gaps"). It
+  reads the whole repo but only writes to `docs/bungi/` (`CHANGELOG.md`, `GAPS.md`,
+  `RESEARCH.md`) — never commits, never touches application code.
+
+None of this affects the deployed site — the file map and editing instructions above
+still apply to the public pages.
+
 That's it — the nav bar updates everywhere automatically.

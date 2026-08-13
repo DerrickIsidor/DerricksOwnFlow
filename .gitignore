@@ -1,0 +1,21 @@
+# Secrets
+.env
+.env.*
+*.key
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings (per-user overrides; project settings.local.json stays untracked)
+.claude/settings.local.json
