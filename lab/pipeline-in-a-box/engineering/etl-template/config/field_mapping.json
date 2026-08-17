@@ -1,0 +1,41 @@
+{
+  "_comment": "Per-client config. Keys are this pipeline's CANONICAL field names (fixed, never change these). Values are the column/key name that client's raw export actually uses. Onboarding a new client = writing a new file like this one, nothing in etl/*.py changes. See ../README.md.",
+
+  "customers": {
+    "source_customer_id": "customer_id",
+    "first_name": "first_name",
+    "last_name": "last_name",
+    "email": "email",
+    "phone": "phone",
+    "address_line1": "address",
+    "city": "city",
+    "state": "state",
+    "postal_code": "zip",
+    "customer_since_date": "date_created"
+  },
+
+  "repair_orders": {
+    "source_ro_number": "ro_number",
+    "source_customer_id": "customer_id",
+    "source_vehicle_id": "vehicle_vin",
+    "vehicle_year": "vehicle_year",
+    "vehicle_make": "vehicle_make",
+    "vehicle_model": "vehicle_model",
+    "open_date": "open_date",
+    "close_date": "close_date",
+    "status": "status",
+    "technician": "technician",
+    "labor_amount": "labor_amount",
+    "parts_amount": "parts_amount",
+    "tax_amount": "tax_amount",
+    "total_amount": "total_amount"
+  },
+
+  "payments": {
+    "source_payment_id": "payment_id",
+    "source_ro_number": "ro_number",
+    "payment_date": "payment_date",
+    "payment_amount": "amount",
+    "payment_method": "method"
+  }
+}

@@ -314,6 +314,36 @@ and sharing AI/data projects:
   this") or to audit the project ("ask Bungi what's out of date" / "find gaps"). It
   reads the whole repo but only writes to `docs/bungi/` (`CHANGELOG.md`, `GAPS.md`,
   `RESEARCH.md`) — never commits, never touches application code.
+- **`infra/`** — AWS CDK (Python) stack for data/AI projects: VPC + Aurora Serverless
+  v2 Postgres + an example Lambda pattern (`DataAiBaselineStack`). Has its own deploy
+  lifecycle (`cdk deploy` to AWS), separate from the site and from `lab/`. See
+  `infra/README.md`.
+- **`cdk-engineer`** (`.claude/agents/cdk-engineer.md`) — the subagent for extending
+  `infra/`: new constructs, Lambdas, database changes. Invoke it for anything CDK-
+  related ("add a new Lambda to infra"). Never runs `cdk deploy`/`destroy`/`bootstrap`
+  without confirming first — those are real, billed AWS changes.
+- **`cdk-data-ai-stack`** skill (`.claude/skills/cdk-data-ai-stack/`) — unlike the
+  five vendored skills above, this one is written for this repo specifically and is
+  meant to keep growing: every infra decision, convention, and pattern gets recorded
+  here as it's learned, so `cdk-engineer` (and future sessions) don't re-derive it.
+- **Data/cloud team** — a second set of local subagents for modern data & cloud work in
+  general (not just `infra/`). `data-team-lead` (`.claude/agents/data-team-lead.md`) is
+  the entry point/orchestrator — invoke it for anything spanning more than one
+  specialty; it fans work out in parallel to whichever of these it needs:
+  - **`cloud-engineer`** — AWS/cloud architecture, Docker/K8s, Linux, DevOps in general
+    (broader than `cdk-engineer`'s CDK-code focus; hands off to `cdk-engineer` once a
+    decision needs to become actual `infra/` code).
+  - **`data-engineer`** — SQL, ETL/ELT, data warehousing, pipeline design.
+  - **`data-scientist`** — Python/pandas EDA, feature engineering, ML model selection.
+  - **`bi-analyst`** — Power BI, DAX, Excel Power Pivot, dashboards/reports.
+  - **`business-strategist`** — ROI/business-case framing, prioritization, team structure.
+
+  Each is backed by a matching local skill in `.claude/skills/` (`aws-cloud-devops`,
+  `sql-data-engineering`, `python-data-science`, `powerbi-dax-excel`,
+  `data-business-strategy`) drafted from a curated subset of
+  `docs/Data Science Cheat Sheet/` plus general knowledge — not yet run through
+  skill-creator's full eval loop. Invoke a specialist directly for a single-specialty
+  task; invoke `data-team-lead` when a request needs more than one.
 
 None of this affects the deployed site — the file map and editing instructions above
 still apply to the public pages.

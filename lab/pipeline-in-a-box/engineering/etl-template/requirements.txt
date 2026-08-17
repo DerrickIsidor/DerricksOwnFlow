@@ -1,0 +1,12 @@
+# Runtime dependency for this ETL template.
+#
+# pg8000: pure-Python Postgres driver, no compiled C extensions -- installs
+# straight into a Lambda deployment package with `pip install -r requirements.txt -t .`,
+# no Docker asset bundling needed. Matches this repo's existing driver choice for
+# infra/lambda_src/example_handler -- see
+# ../../../.claude/skills/cdk-data-ai-stack/references/decisions.md.
+#
+# Everything else this template uses (csv, json, dataclasses, decimal, datetime) is
+# Python stdlib -- deliberately, to stay dependency-light for the eventual Lambda
+# package-size constraint.
+pg8000>=1.31,<2

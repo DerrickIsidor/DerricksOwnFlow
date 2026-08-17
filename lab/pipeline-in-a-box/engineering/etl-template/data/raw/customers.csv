@@ -1,0 +1,16 @@
+customer_id,first_name,last_name,email,phone,address,city,state,zip,date_created
+CUST-0001,James,Turner,james.turner@example.com,404-555-1001,107 Maple Ave,Atlanta,GA,30001,2024-01-24
+CUST-0002,Maria,Alvarez,maria.alvarez@example.com,404-555-1002,114 Highland Rd,Marietta,GA,30002,2024-04-08
+CUST-0003,Robert,Nguyen,robert.nguyen@example.com,404-555-1003,121 Peachtree St,Decatur,GA,30003,2024-12-04
+CUST-0004,Linda,Osei,linda.osei@example.com,404-555-1004,128 Industrial Pkwy,College Park,GA,30004,2024-02-19
+CUST-0005,David,Brooks,david.brooks@example.com,404-555-1005,135 Sunset Dr,East Point,GA,30005,2024-01-01
+CUST-0006,Karen,Patel,karen.patel@example.com,404-555-1006,142 Elm St,Atlanta,GA,30006,2024-04-08
+CUST-0007,Michael,Hendricks,michael.hendricks@example.com,404-555-1007,149 Cascade Rd,College Park,GA,30007,2024-10-01
+CUST-0008,Susan,Coleman,susan.coleman@example.com,404-555-1008,156 Camp Creek Pkwy,College Park,GA,30008,2024-04-23
+CUST-0009,William,Silva,william.silva@example.com,404-555-1009,163 Ponce De Leon Ave,College Park,GA,30009,2024-07-08
+CUST-0010,Patricia,Meyer,patricia.meyer@example.com,404-555-1010,170 Metropolitan Pkwy,East Point,GA,30010,2024-10-09
+CUST-0011,Chris,Okafor,chris.okafor@example.com,404-555-1011,177 Cobb Pkwy,Atlanta,GA,30011,2024-03-23
+CUST-0012,Nancy,Reyes,nancy.reyes@example.com,404-555-1012,184 Riverside Dr,East Point,GA,30012,2024-06-09
+CUST-0013,Daniel,Blackwood,daniel.blackwood@example.com,404-555-1013,191 Moreland Ave,Decatur,GA,30013,2024-04-25
+CUST-0014,Angela,Chen,angela.chen@example.com,404-555-1014,198 Buford Hwy,Marietta,GA,30014,2024-02-03
+CUST-0015,Kevin,Fontaine,kevin.fontaine@example.com,404-555-1015,205 Cascade Ave,East Point,GA,30015,2024-02-12

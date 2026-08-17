@@ -1,0 +1,191 @@
+[
+  {
+    "payment_id": "PAY-00001",
+    "ro_number": "RO-00001",
+    "payment_date": "2026-06-15",
+    "amount": 514.1,
+    "method": "check"
+  },
+  {
+    "payment_id": "PAY-00002",
+    "ro_number": "RO-00003",
+    "payment_date": "2026-07-12",
+    "amount": 1445.97,
+    "method": "check"
+  },
+  {
+    "payment_id": "PAY-00003",
+    "ro_number": "RO-00004",
+    "payment_date": "2026-04-09",
+    "amount": 494.01,
+    "method": "cash"
+  },
+  {
+    "payment_id": "PAY-00004",
+    "ro_number": "RO-00005",
+    "payment_date": "2026-06-30",
+    "amount": 650.92,
+    "method": "financing"
+  },
+  {
+    "payment_id": "PAY-00005",
+    "ro_number": "RO-00007",
+    "payment_date": "2026-03-28",
+    "amount": 712.12,
+    "method": "card"
+  },
+  {
+    "payment_id": "PAY-00006",
+    "ro_number": "RO-00009",
+    "payment_date": "2026-03-22",
+    "amount": 1380.26,
+    "method": "card"
+  },
+  {
+    "payment_id": "PAY-00007",
+    "ro_number": "RO-00010",
+    "payment_date": "2026-06-06",
+    "amount": 333.68,
+    "method": "check"
+  },
+  {
+    "payment_id": "PAY-00008",
+    "ro_number": "RO-00010",
+    "payment_date": "2026-06-11",
+    "amount": 583.16,
+    "method": "card"
+  },
+  {
+    "payment_id": "PAY-00009",
+    "ro_number": "RO-00012",
+    "payment_date": "2026-05-10",
+    "amount": 1514.77,
+    "method": "check"
+  },
+  {
+    "payment_id": "PAY-00010",
+    "ro_number": "RO-00015",
+    "payment_date": "2026-02-13",
+    "amount": 533.82,
+    "method": "card"
+  },
+  {
+    "payment_id": "PAY-00011",
+    "ro_number": "RO-00015",
+    "payment_date": "2026-02-25",
+    "amount": 436.55,
+    "method": "check"
+  },
+  {
+    "payment_id": "PAY-00012",
+    "ro_number": "RO-00017",
+    "payment_date": "2026-08-21",
+    "amount": 1387.32,
+    "method": "cash"
+  },
+  {
+    "payment_id": "PAY-00013",
+    "ro_number": "RO-00018",
+    "payment_date": "2026-07-12",
+    "amount": 623.84,
+    "method": "cash"
+  },
+  {
+    "payment_id": "PAY-00014",
+    "ro_number": "RO-00019",
+    "payment_date": "2026-06-22",
+    "amount": 318.09,
+    "method": "cash"
+  },
+  {
+    "payment_id": "PAY-00015",
+    "ro_number": "RO-00020",
+    "payment_date": "2026-02-13",
+    "amount": 885.61,
+    "method": "check"
+  },
+  {
+    "payment_id": "PAY-00016",
+    "ro_number": "RO-00021",
+    "payment_date": "2026-06-22",
+    "amount": 1347.93,
+    "method": "card"
+  },
+  {
+    "payment_id": "PAY-00017",
+    "ro_number": "RO-00022",
+    "payment_date": "2026-07-15",
+    "amount": 500.78,
+    "method": "card"
+  },
+  {
+    "payment_id": "PAY-00018",
+    "ro_number": "RO-00022",
+    "payment_date": "2026-07-18",
+    "amount": 671.8,
+    "method": "check"
+  },
+  {
+    "payment_id": "PAY-00019",
+    "ro_number": "RO-00023",
+    "payment_date": "2026-05-02",
+    "amount": 733.78,
+    "method": "check"
+  },
+  {
+    "payment_id": "PAY-00020",
+    "ro_number": "RO-00025",
+    "payment_date": "2026-06-29",
+    "amount": 637.04,
+    "method": "card"
+  },
+  {
+    "payment_id": "PAY-00021",
+    "ro_number": "RO-00025",
+    "payment_date": "2026-07-10",
+    "amount": 835.71,
+    "method": "card"
+  },
+  {
+    "payment_id": "PAY-00022",
+    "ro_number": "RO-00026",
+    "payment_date": "2026-08-15",
+    "amount": 715.24,
+    "method": "card"
+  },
+  {
+    "payment_id": "PAY-00023",
+    "ro_number": "RO-00026",
+    "payment_date": "2026-08-26",
+    "amount": 550.82,
+    "method": "check"
+  },
+  {
+    "payment_id": "PAY-00024",
+    "ro_number": "RO-00028",
+    "payment_date": "2026-02-20",
+    "amount": 446.82,
+    "method": "financing"
+  },
+  {
+    "payment_id": "PAY-00025",
+    "ro_number": "RO-00029",
+    "payment_date": "2026-08-18",
+    "amount": 305.45,
+    "method": "cash"
+  },
+  {
+    "payment_id": "PAY-00026",
+    "ro_number": "RO-00029",
+    "payment_date": "2026-08-26",
+    "amount": 472.8,
+    "method": "cash"
+  },
+  {
+    "payment_id": "PAY-00027",
+    "ro_number": "RO-00030",
+    "payment_date": "2026-07-14",
+    "amount": 1222.29,
+    "method": "financing"
+  }
+]

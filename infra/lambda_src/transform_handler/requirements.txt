@@ -1,0 +1,14 @@
+# Runtime deps for THIS Lambda only -- not the CDK app's own requirements.txt.
+# boto3 ships built into the Lambda Python runtime already, no install needed.
+# pg8000 is pure Python (no C extensions), so it can be installed straight
+# into this folder before packaging without needing Docker bundling:
+#   pip install -r requirements.txt -t .
+# Same driver choice as example_handler -- see
+# ../../.claude/skills/cdk-data-ai-stack/references/lambda-patterns.md.
+#
+# No CSV/JSON parsing library beyond the stdlib (csv, json) on purpose --
+# keeps this Lambda dependency-light and avoids needing Docker/compiled-dep
+# bundling (e.g. pandas) for what's currently just a generic stub transform.
+# Revisit if/when the real transform logic (see handler.py's transform())
+# needs something heavier.
+pg8000>=1.31,<2.0

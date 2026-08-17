@@ -1,0 +1,8 @@
+# Runtime deps for THIS Lambda only -- not the CDK app's own requirements.txt.
+# boto3 ships built into the Lambda Python runtime already, no install needed.
+# pg8000 is here for the next step (an actual Postgres query) -- not yet used
+# by handler.py. It's pure Python (no C extensions), so it can be installed
+# straight into this folder before packaging without needing Docker bundling:
+#   pip install -r requirements.txt -t .
+# See ../../.claude/skills/cdk-data-ai-stack/references/lambda-patterns.md.
+pg8000>=1.31,<2.0

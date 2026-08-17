@@ -1,0 +1,5 @@
+# Dev/test-only dependencies -- NOT part of the Lambda package.
+pytest>=8
+pglast>=8   # real libpg_query-based Postgres parser, used to statically verify
+            # load.py's SQL against sql/schema.sql without a live database --
+            # see tests/test_load_sql.py.
