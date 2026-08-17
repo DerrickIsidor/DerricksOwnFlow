@@ -24,3 +24,7 @@ Thumbs.db
 
 # Claude Code local settings (per-user overrides; project settings.local.json stays untracked)
 .claude/settings.local.json
+
+
+# a lot of files
+docs/Data-Science-Cheat-Sheet/
